@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Helpers;
+using System;
 using TaleWorlds.Core;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
@@ -98,7 +99,8 @@ namespace LightProsperity
                                         if (HeroHelper.HeroShouldGiveEliteTroop(notable) && ((double)MBRandom.RandomFloat < ((double)notable.Power - 200d) / 200d))
                                         {
                                             notable.VolunteerTypes[index] = cultureObject.EliteBasicTroop;
-                                            notable.AddPower(-SubModule.Settings.notableNobleRecruitPowerCost);
+                                            int powerMinus = Math.Min(notable.Power - 1, SubModule.Settings.notableNobleRecruitPowerCost);
+                                            notable.AddPower(-powerMinus);
                                         } else
                                         {
                                             notable.VolunteerTypes[index] = basicTroop;
@@ -108,7 +110,7 @@ namespace LightProsperity
                                     else
                                     {
                                         float num3 = (float) ((double)num2 * (double)num2 / ((double)notable.Power * (double)notable.Power));
-                                        if (MBRandom.RandomInt((int) ((double)notable.VolunteerTypes[index].Level * num3)) == 0 && notable.VolunteerTypes[index].UpgradeTargets != null)
+                                        if ((double)MBRandom.RandomFloat < 1 / ((double)notable.VolunteerTypes[index].Level * num3) && notable.VolunteerTypes[index].UpgradeTargets != null)
                                         {
                                             notable.VolunteerTypes[index] = notable.VolunteerTypes[index].UpgradeTargets[MBRandom.RandomInt(notable.VolunteerTypes[index].UpgradeTargets.Length)];
                                             flag = true;
