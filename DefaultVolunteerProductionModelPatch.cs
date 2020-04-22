@@ -15,23 +15,21 @@ namespace LightProsperity
         {
             if (settlement.IsTown)
             {
-                if (settlement.Prosperity <= 1000)
+                if (settlement.Prosperity <= SubModule.Settings.townMinProsperityForRecruit)
                 {
-                    // A recruit cost 20 prosperity
                     __result = 0;
                     return;
                 }
-                __result = __result * settlement.Prosperity / 3000;
+                __result = __result * settlement.Prosperity / SubModule.Settings.townProsperityThreshould;
             }
             if (settlement.IsVillage)
             {
-                if (settlement.Village.Hearth <= 100)
+                if (settlement.Village.Hearth <= SubModule.Settings.villageMinProsperityForRecruit)
                 {
-                    // A recruit cost 10 hearth
                     __result = 0;
                     return;
                 }
-                __result = __result * settlement.Village.Hearth / 300;
+                __result = __result * settlement.Village.Hearth / SubModule.Settings.villageProsperityThreshould;
             }
         }
     }

@@ -15,23 +15,30 @@ namespace LightProsperity
             Hero individual,
             CharacterObject troop,
             int count)
-        {
-            Settlement settlement = arg2;
-            if (settlement != null)
+        {           
+            if (individual != null)
             {
-                if (settlement.IsTown)
+                Settlement settlement = individual.CurrentSettlement;
+                if (settlement != null)
                 {
-                    settlement.Prosperity -= 20 * count;
-                }
-                if (settlement.IsVillage)
-                {
-                    settlement.Village.Hearth -= 10 * count;
-                    if (settlement.Village.Hearth < 10)
+                    if (settlement.IsTown)
                     {
-                        settlement.Village.Hearth = 10;
+                        settlement.Prosperity -= SubModule.Settings.townRecruitProsperityCost * count;
+                        if (settlement.Prosperity < 0)
+                        {
+                            settlement.Prosperity = 0;
+                        }
+                    }
+                    if (settlement.IsVillage)
+                    {
+                        settlement.Village.Hearth -= SubModule.Settings.villageRecruitProsperityCost * count;
+                        if (settlement.Village.Hearth < 0)
+                        {
+                            settlement.Village.Hearth = 0;
+                        }
                     }
                 }
-            }
+            }        
         }
     }
 
@@ -45,14 +52,14 @@ namespace LightProsperity
             {
                 if (settlement.IsTown)
                 {
-                    settlement.Prosperity -= 20 * count;
+                    settlement.Prosperity -= SubModule.Settings.townRecruitProsperityCost * count;
                 }
                 if (settlement.IsVillage)
                 {
-                    settlement.Village.Hearth -= 10 * count;
-                    if (settlement.Village.Hearth < 10)
+                    settlement.Village.Hearth -= SubModule.Settings.villageRecruitProsperityCost * count;
+                    if (settlement.Village.Hearth < 0)
                     {
-                        settlement.Village.Hearth = 10;
+                        settlement.Village.Hearth = 0;
                     }
                 }
             }
@@ -91,7 +98,7 @@ namespace LightProsperity
                                         if (HeroHelper.HeroShouldGiveEliteTroop(notable) && ((double)MBRandom.RandomFloat < ((double)notable.Power - 200d) / 200d))
                                         {
                                             notable.VolunteerTypes[index] = cultureObject.EliteBasicTroop;
-                                            notable.AddPower(-5);
+                                            notable.AddPower(-SubModule.Settings.notableNobleRecruitPowerCost);
                                         } else
                                         {
                                             notable.VolunteerTypes[index] = basicTroop;

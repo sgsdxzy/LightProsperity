@@ -24,20 +24,20 @@ namespace LightProsperity
             // +1 for owned settlement
             int num7 = sellerHero.CurrentSettlement == null || buyerHero.Clan != sellerHero.CurrentSettlement.OwnerClan ? 0 : 1;
 
-            // Prosperity bonus
+            // Prosperity bonus, only if not at war
             int num8 = 0;
             Settlement settlement = sellerHero.CurrentSettlement;
-            if (settlement != null)
+            if (settlement != null && !buyerHero.MapFaction.IsAtWarWith(sellerHero.CurrentSettlement.MapFaction))
             {
                 if (settlement.IsTown)
                 {
                     float prosperity = settlement.Prosperity;
-                    num8 = (int) Math.Floor((prosperity - 3000) / 2000);
+                    num8 = (int)Math.Floor((prosperity - SubModule.Settings.townProsperityThreshould) / SubModule.Settings.townProsperityPerBonusSlot);
                 }
                 if (settlement.IsVillage)
                 {
                     float prosperity = settlement.Village.Hearth;
-                    num8 = (int)Math.Floor((prosperity - 300) / 200);
+                    num8 = (int)Math.Floor((prosperity - SubModule.Settings.villageProsperityThreshould) / SubModule.Settings.villageProsperityPerBonusSlot);
                 }
             }
 

@@ -1,0 +1,11 @@
+{
+  "townRecruitProsperityCost": 20.0,
+  "villageRecruitProsperityCost": 10.0,
+  "notableNobleRecruitPowerCost": 5,
+  "townMinProsperityForRecruit": 1000,
+  "villageMinProsperityForRecruit": 100,
+  "townProsperityThreshould": 3000,
+  "townProsperityPerBonusSlot": 2000,
+  "villageProsperityThreshould": 300,
+  "villageProsperityPerBonusSlot": 200
+}
