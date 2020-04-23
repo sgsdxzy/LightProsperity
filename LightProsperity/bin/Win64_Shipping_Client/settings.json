@@ -1,13 +1,17 @@
 {
   "townRecruitProsperityCost": 10.0,
   "villageRecruitProsperityCost": 5.0,
-  "notableNobleRecruitPowerCost": 3,
+  "castleRecruitProsperityCost": 5.0,
   "townMinProsperityForRecruit": 1000,
   "villageMinProsperityForRecruit": 100,
+  "castleMinProsperityForRecruit": 500,
+  "notableNobleRecruitPowerCost": 3,
+  "notablePowerThreshouldForNobleRecruit": 600,
   "townProsperityThreshould": 3000,
   "townProsperityPerBonusSlot": 2000,
   "villageProsperityThreshould": 300,
   "villageProsperityPerBonusSlot": 200,
+  "castleProsperityThreshould": 5000,  
   "Bonus Slots For Whom": "0: everyone; 1: not at war; 2: same faction; 3: same clan.",
   "bonusSlotsFor": 2
 }

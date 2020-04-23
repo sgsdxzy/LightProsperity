@@ -15,21 +15,15 @@ namespace LightProsperity
         {
             if (settlement.IsTown)
             {
-                if (settlement.Prosperity <= SubModule.Settings.townMinProsperityForRecruit)
-                {
-                    __result = 0;
-                    return;
-                }
-                __result = __result * settlement.Prosperity / SubModule.Settings.townProsperityThreshould;
+                float multiplier = (settlement.Prosperity - SubModule.Settings.townMinProsperityForRecruit) /
+                    (SubModule.Settings.townProsperityThreshould - SubModule.Settings.townMinProsperityForRecruit);
+                __result *= multiplier;
             }
             if (settlement.IsVillage)
             {
-                if (settlement.Village.Hearth <= SubModule.Settings.villageMinProsperityForRecruit)
-                {
-                    __result = 0;
-                    return;
-                }
-                __result = __result * settlement.Village.Hearth / SubModule.Settings.villageProsperityThreshould;
+                float multiplier = (settlement.Prosperity - SubModule.Settings.villageMinProsperityForRecruit) /
+                    (SubModule.Settings.villageProsperityThreshould - SubModule.Settings.villageMinProsperityForRecruit);
+                __result *= multiplier;
             }
         }
     }

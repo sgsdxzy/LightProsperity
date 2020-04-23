@@ -2,11 +2,11 @@
 <Module>
 	<Name value="Light Prosperity"/>
 	<Id value="LightProsperity"/>
-	<Version value="v1.2.1"/>
+	<Version value="v1.2.2"/>
 	<DefaultModule value="false"/>
 	<SingleplayerModule value="true"/>
 	<MultiplayerModule value="false"/>
-  	<Official value="false"/>
+  <Official value="false"/>
 	<DependedModules>
 		<DependedModule Id="Native"/>
 		<DependedModule Id="SandBoxCore"/>

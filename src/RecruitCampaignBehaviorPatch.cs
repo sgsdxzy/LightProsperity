@@ -78,10 +78,12 @@ namespace LightProsperity
         private static void GenerateBasicTroop(Hero notable, int index)
         {
             CultureObject cultureObject = notable.CurrentSettlement != null ? notable.CurrentSettlement.Culture : notable.Clan.Culture;
-            if (HeroHelper.HeroShouldGiveEliteTroop(notable) && ((double)MBRandom.RandomFloat < ((double)notable.Power - 200d) / 200d))
+            double notableMinPowerForNobleRecruit = 200;
+            if (HeroHelper.HeroShouldGiveEliteTroop(notable) && ((double)MBRandom.RandomFloat < 
+                ((double)notable.Power - notableMinPowerForNobleRecruit) / (SubModule.Settings.notablePowerThreshouldForNobleRecruit - notableMinPowerForNobleRecruit)))
             {
                 notable.VolunteerTypes[index] = cultureObject.EliteBasicTroop;
-                int powerMinus = Math.Min(notable.Power - 1, SubModule.Settings.notableNobleRecruitPowerCost);
+                int powerMinus = Math.Min(notable.Power - 1, (int)SubModule.Settings.notableNobleRecruitPowerCost);
                 notable.AddPower(-powerMinus);
             }
             else
@@ -127,6 +129,15 @@ namespace LightProsperity
             }
         }
 
+        static int GetDailyCastleNobleRecruitCount(Settlement settlement)
+        {
+            double chance = (settlement.Prosperity - SubModule.Settings.castleMinProsperityForRecruit) / 
+                (SubModule.Settings.castleProsperityThreshould - SubModule.Settings.castleMinProsperityForRecruit);
+            int num = (int)Math.Floor(chance);
+            num += (double)MBRandom.RandomFloat < (chance - num) ? 1 : 0;
+            return num;
+        }
+
         static bool Prefix(ref bool initialRunning)
         {
             foreach (Settlement settlement in Campaign.Current.Settlements)
@@ -159,6 +170,22 @@ namespace LightProsperity
                                 SortNotableVolunteers(notable);
                             }
                         }
+                    }
+                }
+                if (settlement.IsCastle)
+                {
+                    int num = GetDailyCastleNobleRecruitCount(settlement);
+                    if (num > 0)
+                    {
+                        CharacterObject troop = settlement.Culture.EliteBasicTroop;
+                        if (settlement.Town.GarrisonParty == null)
+                        {
+                            settlement.AddGarrisonParty(false);
+                        }
+                        int max_num = settlement.Town.GarrisonParty.Party.PartySizeLimit - settlement.Town.GarrisonParty.Party.NumberOfAllMembers;
+                        int count = Math.Min(num, max_num);
+                        settlement.Town.GarrisonParty.MemberRoster.AddToCounts(troop, count, false, 0, 0, true, -1);
+                        settlement.Prosperity -= SubModule.Settings.castleRecruitProsperityCost * count;
                     }
                 }
             }
