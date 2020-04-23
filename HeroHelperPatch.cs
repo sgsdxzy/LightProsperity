@@ -24,23 +24,46 @@ namespace LightProsperity
             // +1 for owned settlement
             int num7 = sellerHero.CurrentSettlement == null || buyerHero.Clan != sellerHero.CurrentSettlement.OwnerClan ? 0 : 1;
 
-            // Prosperity bonus, only if not at war
-            int num8 = 0;
+            // Prosperity bonus
+            int num8_0 = 0;
             Settlement settlement = sellerHero.CurrentSettlement;
-            if (settlement != null && !buyerHero.MapFaction.IsAtWarWith(sellerHero.CurrentSettlement.MapFaction))
+            if (settlement != null)
             {
                 if (settlement.IsTown)
                 {
                     float prosperity = settlement.Prosperity;
-                    num8 = (int)Math.Floor((prosperity - SubModule.Settings.townProsperityThreshould) / SubModule.Settings.townProsperityPerBonusSlot);
+                    num8_0 = (int)Math.Floor((prosperity - SubModule.Settings.townProsperityThreshould) / SubModule.Settings.townProsperityPerBonusSlot);
                 }
                 if (settlement.IsVillage)
                 {
                     float prosperity = settlement.Village.Hearth;
-                    num8 = (int)Math.Floor((prosperity - SubModule.Settings.villageProsperityThreshould) / SubModule.Settings.villageProsperityPerBonusSlot);
+                    num8_0 = (int)Math.Floor((prosperity - SubModule.Settings.villageProsperityThreshould) / SubModule.Settings.villageProsperityPerBonusSlot);
                 }
             }
 
+            int num8 = 0;
+            if (num8_0 > 0)
+            {
+                switch (SubModule.Settings.bonusSlotsFor)
+                {
+                    case 0:
+                        num8 = num8_0;
+                        break;
+                    case 1:
+                        num8 = !buyerHero.MapFaction.IsAtWarWith(sellerHero.CurrentSettlement.MapFaction) ? num8_0 : 0;
+                        break;
+                    case 2:
+                        num8 = buyerHero.MapFaction == sellerHero.CurrentSettlement.MapFaction ? num8 : 0;
+                        break;
+                    default:
+                        num8 = buyerHero.Clan == sellerHero.CurrentSettlement.OwnerClan ? num8 : 0;
+                        break;
+                }
+            } else
+            {
+                num8 = num8_0;
+            }
+            
             __result = Math.Max(0, num1 + num6 + num2 + num3 + num4 + num7 + num8);
             return false;
         }

@@ -75,6 +75,58 @@ namespace LightProsperity
             return hero.VolunteerTypes[bit] != null;
         }
 
+        private static void GenerateBasicTroop(Hero notable, int index)
+        {
+            CultureObject cultureObject = notable.CurrentSettlement != null ? notable.CurrentSettlement.Culture : notable.Clan.Culture;
+            if (HeroHelper.HeroShouldGiveEliteTroop(notable) && ((double)MBRandom.RandomFloat < ((double)notable.Power - 200d) / 200d))
+            {
+                notable.VolunteerTypes[index] = cultureObject.EliteBasicTroop;
+                int powerMinus = Math.Min(notable.Power - 1, SubModule.Settings.notableNobleRecruitPowerCost);
+                notable.AddPower(-powerMinus);
+            }
+            else
+            {
+                notable.VolunteerTypes[index] = cultureObject.BasicTroop;
+            }
+        }
+
+        private static void UpgradeTroop(Hero notable, int index)
+        {
+            double num2 = 200;
+            float num3 = (float)(num2 * num2 / (notable.Power * notable.Power));
+            if ((double)MBRandom.RandomFloat < 1 / ((double)notable.VolunteerTypes[index].Level * num3) && notable.VolunteerTypes[index].UpgradeTargets != null)
+            {
+                notable.VolunteerTypes[index] = notable.VolunteerTypes[index].UpgradeTargets[MBRandom.RandomInt(notable.VolunteerTypes[index].UpgradeTargets.Length)];
+            }
+        }
+
+        private static void SortNotableVolunteers(Hero notable)
+        {
+            for (int index1 = 0; index1 < 6; ++index1)
+            {
+                for (int index2 = 0; index2 < 6; ++index2)
+                {
+                    if (notable.VolunteerTypes[index2] != null)
+                    {
+                        for (int index3 = index2 + 1; index3 < 6; ++index3)
+                        {
+                            if (notable.VolunteerTypes[index3] != null)
+                            {
+                                if ((double)notable.VolunteerTypes[index2].Level + (notable.VolunteerTypes[index2].IsMounted ? 0.5 : 0.0) > (double)notable.VolunteerTypes[index3].Level + (notable.VolunteerTypes[index3].IsMounted ? 0.5 : 0.0))
+                                {
+                                    CharacterObject volunteerType = notable.VolunteerTypes[index2];
+                                    notable.VolunteerTypes[index2] = notable.VolunteerTypes[index3];
+                                    notable.VolunteerTypes[index3] = volunteerType;
+                                    break;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         static bool Prefix(ref bool initialRunning)
         {
             foreach (Settlement settlement in Campaign.Current.Settlements)
@@ -85,64 +137,26 @@ namespace LightProsperity
                     {
                         if (notable.CanHaveRecruits)
                         {
-                            bool flag = false;
-                            CultureObject cultureObject = notable.CurrentSettlement != null ? notable.CurrentSettlement.Culture : notable.Clan.Culture;
-                            CharacterObject basicTroop = cultureObject.BasicTroop;
+                            bool flag = false;                  
                             //double num1 = !notable.IsRuralNotable || notable.Power < 200 ? 0.5 : 1.5;
-                            float num2 = 200f;
                             for (int index = 0; index < 6; ++index)
                             {
                                 if ((double)MBRandom.RandomFloat < (double)Campaign.Current.Models.VolunteerProductionModel.GetDailyVolunteerProductionProbability(notable, index, settlement))
                                 {
+                                    flag = true;
                                     if (!IsBitSet(notable, index))
-                                    {             
-                                        if (HeroHelper.HeroShouldGiveEliteTroop(notable) && ((double)MBRandom.RandomFloat < ((double)notable.Power - 200d) / 200d))
-                                        {
-                                            notable.VolunteerTypes[index] = cultureObject.EliteBasicTroop;
-                                            int powerMinus = Math.Min(notable.Power - 1, SubModule.Settings.notableNobleRecruitPowerCost);
-                                            notable.AddPower(-powerMinus);
-                                        } else
-                                        {
-                                            notable.VolunteerTypes[index] = basicTroop;
-                                        }                                   
-                                        flag = true;                                                                           
+                                    {
+                                        GenerateBasicTroop(notable, index);                                                                                 
                                     }
                                     else
                                     {
-                                        float num3 = (float) ((double)num2 * (double)num2 / ((double)notable.Power * (double)notable.Power));
-                                        if ((double)MBRandom.RandomFloat < 1 / ((double)notable.VolunteerTypes[index].Level * num3) && notable.VolunteerTypes[index].UpgradeTargets != null)
-                                        {
-                                            notable.VolunteerTypes[index] = notable.VolunteerTypes[index].UpgradeTargets[MBRandom.RandomInt(notable.VolunteerTypes[index].UpgradeTargets.Length)];
-                                            flag = true;
-                                        }
+                                        UpgradeTroop(notable, index);
                                     }
                                 }
                             }
                             if (flag)
                             {
-                                for (int index1 = 0; index1 < 6; ++index1)
-                                {
-                                    for (int index2 = 0; index2 < 6; ++index2)
-                                    {
-                                        if (notable.VolunteerTypes[index2] != null)
-                                        {
-                                            for (int index3 = index2 + 1; index3 < 6; ++index3)
-                                            {
-                                                if (notable.VolunteerTypes[index3] != null)
-                                                {
-                                                    if ((double)notable.VolunteerTypes[index2].Level + (notable.VolunteerTypes[index2].IsMounted ? 0.5 : 0.0) > (double)notable.VolunteerTypes[index3].Level + (notable.VolunteerTypes[index3].IsMounted ? 0.5 : 0.0))
-                                                    {
-                                                        CharacterObject volunteerType = notable.VolunteerTypes[index2];
-                                                        notable.VolunteerTypes[index2] = notable.VolunteerTypes[index3];
-                                                        notable.VolunteerTypes[index3] = volunteerType;
-                                                        break;
-                                                    }
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                SortNotableVolunteers(notable);
                             }
                         }
                     }

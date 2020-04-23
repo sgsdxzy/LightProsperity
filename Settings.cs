@@ -30,5 +30,8 @@ namespace LightProsperity
 
         [JsonProperty("villageProsperityPerBonusSlot")]
         public float villageProsperityPerBonusSlot { get; set; }
+
+        [JsonProperty("bonusSlotsFor")]
+        public int bonusSlotsFor { get; set; }
     }
 }
