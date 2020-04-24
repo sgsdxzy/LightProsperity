@@ -32,12 +32,12 @@ namespace LightProsperity
                 if (settlement.IsTown)
                 {
                     float prosperity = settlement.Prosperity;
-                    num8_0 = (int)Math.Floor((prosperity - SubModule.Settings.townProsperityThreshould) / SubModule.Settings.townProsperityPerBonusSlot);
+                    num8_0 = (int)Math.Floor((prosperity - SubModule.Settings.townProsperityThreshold) / SubModule.Settings.townProsperityPerBonusSlot);
                 }
                 if (settlement.IsVillage)
                 {
                     float prosperity = settlement.Village.Hearth;
-                    num8_0 = (int)Math.Floor((prosperity - SubModule.Settings.villageProsperityThreshould) / SubModule.Settings.villageProsperityPerBonusSlot);
+                    num8_0 = (int)Math.Floor((prosperity - SubModule.Settings.villageProsperityThreshold) / SubModule.Settings.villageProsperityPerBonusSlot);
                 }
             }
 

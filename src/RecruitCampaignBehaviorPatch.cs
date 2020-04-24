@@ -79,8 +79,10 @@ namespace LightProsperity
         {
             CultureObject cultureObject = notable.CurrentSettlement != null ? notable.CurrentSettlement.Culture : notable.Clan.Culture;
             double notableMinPowerForNobleRecruit = 200;
-            if (HeroHelper.HeroShouldGiveEliteTroop(notable) && ((double)MBRandom.RandomFloat < 
-                ((double)notable.Power - notableMinPowerForNobleRecruit) / (SubModule.Settings.notablePowerThreshouldForNobleRecruit - notableMinPowerForNobleRecruit)))
+            double chance = ((double)notable.Power - notableMinPowerForNobleRecruit) / (SubModule.Settings.notablePowerThresholdForNobleRecruit - notableMinPowerForNobleRecruit);
+            // chance = Math.Max(chance, 0);
+            // chance = Math.Sqrt(chance);
+            if (HeroHelper.HeroShouldGiveEliteTroop(notable) && ((double)MBRandom.RandomFloat < chance))
             {
                 notable.VolunteerTypes[index] = cultureObject.EliteBasicTroop;
                 int powerMinus = Math.Min(notable.Power - 1, (int)SubModule.Settings.notableNobleRecruitPowerCost);
@@ -132,7 +134,7 @@ namespace LightProsperity
         static int GetDailyCastleNobleRecruitCount(Settlement settlement)
         {
             double chance = (settlement.Prosperity - SubModule.Settings.castleMinProsperityForRecruit) / 
-                (SubModule.Settings.castleProsperityThreshould - SubModule.Settings.castleMinProsperityForRecruit);
+                (SubModule.Settings.castleProsperityThreshold - SubModule.Settings.castleMinProsperityForRecruit);
             int num = (int)Math.Floor(chance);
             num += (double)MBRandom.RandomFloat < (chance - num) ? 1 : 0;
             return num;

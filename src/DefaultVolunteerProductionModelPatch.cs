@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using System;
+using HarmonyLib;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.SandBox.GameComponents.Map;
 
@@ -15,15 +16,19 @@ namespace LightProsperity
         {
             if (settlement.IsTown)
             {
-                float multiplier = (settlement.Prosperity - SubModule.Settings.townMinProsperityForRecruit) /
-                    (SubModule.Settings.townProsperityThreshould - SubModule.Settings.townMinProsperityForRecruit);
-                __result *= multiplier;
+                double multiplier = (settlement.Prosperity - SubModule.Settings.townMinProsperityForRecruit) /
+                    (SubModule.Settings.townProsperityThreshold - SubModule.Settings.townMinProsperityForRecruit);
+                multiplier = Math.Max(multiplier, 0);
+                multiplier = Math.Sqrt(multiplier);
+                __result *= (float)multiplier;
             }
             if (settlement.IsVillage)
             {
-                float multiplier = (settlement.Prosperity - SubModule.Settings.villageMinProsperityForRecruit) /
-                    (SubModule.Settings.villageProsperityThreshould - SubModule.Settings.villageMinProsperityForRecruit);
-                __result *= multiplier;
+                double multiplier = (settlement.Prosperity - SubModule.Settings.villageMinProsperityForRecruit) /
+                    (SubModule.Settings.villageProsperityThreshold - SubModule.Settings.villageMinProsperityForRecruit);
+                multiplier = Math.Max(multiplier, 0);
+                multiplier = Math.Sqrt(multiplier);
+                __result *= (float)multiplier;
             }
         }
     }
