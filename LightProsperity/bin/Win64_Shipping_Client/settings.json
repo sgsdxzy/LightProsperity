@@ -13,5 +13,6 @@
   "notablePowerThresholdForNobleRecruit": 600,
   "notableNobleRecruitPowerCost": 2,
   "Bonus Slots For Whom": "0: everyone; 1: not at war; 2: same faction; 3: same clan.",
-  "bonusSlotsFor": 2
+  "bonusSlotsFor": 2,
+  "prisonerProsperityValue": 1
 }
