@@ -94,11 +94,20 @@ namespace LightProsperity
             }
         }
 
-        private static void UpgradeTroop(Hero notable, int index)
+        private static double GetTroopUpgradeChance(Hero notable, int index)
         {
+            double difficulty = 1.0;
             double num2 = 200;
-            float num3 = (float)(num2 * num2 / (notable.Power * notable.Power));
-            if ((double)MBRandom.RandomFloat < 1 / ((double)notable.VolunteerTypes[index].Level * num3) && notable.VolunteerTypes[index].UpgradeTargets != null)
+            double num3 = num2 * num2 / (notable.Power * notable.Power);
+            double level_diff = Math.Pow(notable.VolunteerTypes[index].Level, 2) / 11;
+            double chance = 1 / (level_diff * num3 * difficulty);
+
+            return chance;
+        }
+
+        private static void UpgradeTroop(Hero notable, int index)
+        {  
+            if (notable.VolunteerTypes[index].UpgradeTargets != null)
             {
                 notable.VolunteerTypes[index] = notable.VolunteerTypes[index].UpgradeTargets[MBRandom.RandomInt(notable.VolunteerTypes[index].UpgradeTargets.Length)];
             }
@@ -159,11 +168,21 @@ namespace LightProsperity
                                     flag = true;
                                     if (!IsBitSet(notable, index))
                                     {
-                                        GenerateBasicTroop(notable, index);                                                                                 
+                                        GenerateBasicTroop(notable, index);
+                                        for (int i = 0; i < 4; i++)
+                                        {
+                                            if ((double)MBRandom.RandomFloat < GetTroopUpgradeChance(notable, index))
+                                            {
+                                                UpgradeTroop(notable, index);
+                                            }
+                                        }
                                     }
                                     else
                                     {
-                                        UpgradeTroop(notable, index);
+                                        if ((double)MBRandom.RandomFloat < GetTroopUpgradeChance(notable, index))
+                                        {
+                                            UpgradeTroop(notable, index);
+                                        }
                                     }
                                 }
                             }

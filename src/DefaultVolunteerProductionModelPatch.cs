@@ -19,7 +19,7 @@ namespace LightProsperity
                 double multiplier = (settlement.Prosperity - SubModule.Settings.townMinProsperityForRecruit) /
                     (SubModule.Settings.townProsperityThreshold - SubModule.Settings.townMinProsperityForRecruit);
                 multiplier = Math.Max(multiplier, 0);
-                multiplier = Math.Sqrt(multiplier);
+                multiplier = Math.Pow(multiplier, 0.7);
                 __result *= (float)multiplier;
             }
             if (settlement.IsVillage)
@@ -27,7 +27,7 @@ namespace LightProsperity
                 double multiplier = (settlement.Prosperity - SubModule.Settings.villageMinProsperityForRecruit) /
                     (SubModule.Settings.villageProsperityThreshold - SubModule.Settings.villageMinProsperityForRecruit);
                 multiplier = Math.Max(multiplier, 0);
-                multiplier = Math.Sqrt(multiplier);
+                multiplier = Math.Pow(multiplier, 0.7);
                 __result *= (float)multiplier;
             }
         }

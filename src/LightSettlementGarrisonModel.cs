@@ -7,7 +7,7 @@ using TaleWorlds.Localization;
 
 namespace LightProsperity
 {
-    internal class DefaultSettlementGarrisonModel : SettlementGarrisonModel
+    internal class LightSettlementGarrisonModel : SettlementGarrisonModel
     {
         private static readonly TextObject _townWallsText = new TextObject("{=SlmhqqH8}Town Walls", (Dictionary<string, TextObject>)null);
         private static readonly TextObject _moraleText = new TextObject("{=UjL7jVYF}Morale", (Dictionary<string, TextObject>)null);
@@ -24,7 +24,7 @@ namespace LightProsperity
 
         public override int CalculateGarrisonChange(Settlement settlement, StatExplainer explanation = null)
         {
-            return DefaultSettlementGarrisonModel.CalculateGarrisonChangeInternal(settlement, explanation);
+            return LightSettlementGarrisonModel.CalculateGarrisonChangeInternal(settlement, explanation);
         }
 
         private static int CalculateGarrisonChangeInternal(
@@ -35,6 +35,13 @@ namespace LightProsperity
             if (settlement.IsTown || settlement.IsCastle)
             {
                 double loyalty = (double)settlement.Town.Loyalty;
+                if (settlement.IsStarving)
+                {
+                    float foodChange = settlement.Town.FoodChange;
+                    int num = !settlement.Town.Owner.IsStarving || (double)foodChange >= 0.0 ? 
+                        0 : (int)((double)foodChange * SubModule.Settings.garrisonFoodConsumpetionMultiplier / 8.0);
+                    result.Add((float)num, LightSettlementGarrisonModel._foodShortageText);
+                }
                 if (settlement.Town.GarrisonParty != null && ((double)settlement.Town.GarrisonParty.Party.NumberOfHealthyMembers + (double)result.ResultNumber) / (double)settlement.Town.GarrisonParty.Party.PartySizeLimit > (double)settlement.Town.GarrisonParty.PaymentRatio)
                 {
                     int num = 0;
@@ -43,10 +50,10 @@ namespace LightProsperity
                         ++num;
                     }
                     while (((double)settlement.Town.GarrisonParty.Party.NumberOfHealthyMembers + (double)result.ResultNumber - (double)num) / (double)settlement.Town.GarrisonParty.Party.PartySizeLimit >= (double)settlement.Town.GarrisonParty.PaymentRatio && (double)settlement.Town.GarrisonParty.Party.NumberOfHealthyMembers + (double)result.ResultNumber - (double)num > 0.0 && num < 20);
-                    result.Add((float)-num, DefaultSettlementGarrisonModel._paymentIsLess);
+                    result.Add((float)-num, LightSettlementGarrisonModel._paymentIsLess);
                 }
             }
-            DefaultSettlementGarrisonModel.GetSettlementGarrisonChangeDueToIssues(settlement, ref result);
+            LightSettlementGarrisonModel.GetSettlementGarrisonChangeDueToIssues(settlement, ref result);
             return (int)result.ResultNumber;
         }
 
@@ -57,7 +64,7 @@ namespace LightProsperity
             float totalChange;
             if (!IssueManager.DoesSettlementHasIssueEffect(DefaultIssueEffects.SettlementGarrison, settlement, out totalChange))
                 return;
-            result.Add(totalChange, DefaultSettlementGarrisonModel._issues);
+            result.Add(totalChange, LightSettlementGarrisonModel._issues);
         }
 
         public override int FindNumberOfTroopsToTakeFromGarrison(

@@ -12,8 +12,13 @@ namespace LightProsperity
         {
             if (mobileParty.IsGarrison)
             {
-                __result = __result / 2;
+                __result = (int)(__result * SubModule.Settings.garrisonWagesMultiplier);
             }
+        }
+
+        static bool Prepare()
+        {
+            return SubModule.Settings.garrisonWagesMultiplier != 1;
         }
     }
 }

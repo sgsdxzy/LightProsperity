@@ -41,7 +41,7 @@ namespace LightProsperity
 
         private void AddModels(CampaignGameStarter gameStarter)
         {
-            gameStarter?.AddModel(new DefaultSettlementGarrisonModel());
+            gameStarter?.AddModel(new LightSettlementGarrisonModel());
         }
     }
 }

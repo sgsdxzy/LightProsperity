@@ -48,5 +48,20 @@ namespace LightProsperity
 
         [JsonProperty("prisonerProsperityValue")]
         public float prisonerProsperityValue { get; set; }
+
+        [JsonProperty("militiaGrowthMultiplier")]
+        public float militiaGrowthMultiplier { get; set; }
+
+        [JsonProperty("prosperityGrowthMultiplier")]
+        public float prosperityGrowthMultiplier { get; set; }
+
+        [JsonProperty("foodStockChangeMultiplier")]
+        public float foodStockChangeMultiplier { get; set; }
+
+        [JsonProperty("garrisonWagesMultiplier")]
+        public float garrisonWagesMultiplier { get; set; }
+
+        [JsonProperty("garrisonFoodConsumpetionMultiplier")]
+        public float garrisonFoodConsumpetionMultiplier { get; set; }
     }
 }
