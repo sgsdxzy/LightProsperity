@@ -45,5 +45,8 @@ namespace LightProsperity
 
         [JsonProperty("bonusSlotsFor")]
         public int bonusSlotsFor { get; set; }
+
+        [JsonProperty("prisonerProsperityValue")]
+        public float prisonerProsperityValue { get; set; }
     }
 }
