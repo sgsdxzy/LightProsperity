@@ -15,7 +15,7 @@
   "Bonus Slots For Whom": "0: everyone; 1: not at war; 2: same faction; 3: same clan.",
   "bonusSlotsFor": 2,
   "prisonerProsperityValue": 2.0,
-  "militiaGrowthBonus": 0.0,
+  "militiaGrowthBonus": 3.0,
   "prosperityGrowthMultiplier": 1.0,
   "garrisonWagesMultiplier": 0.5,
   "garrisonFoodConsumpetionMultiplier": 0.0
