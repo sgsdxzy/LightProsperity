@@ -11,13 +11,12 @@
   "castleProsperityThreshold": 7500, 
   "castleRecruitProsperityCost": 2.0,
   "notablePowerThresholdForNobleRecruit": 600,
-  "notableNobleRecruitPowerCost": 2,
+  "notableNobleRecruitPowerCost": 1,
   "Bonus Slots For Whom": "0: everyone; 1: not at war; 2: same faction; 3: same clan.",
   "bonusSlotsFor": 2,
-  "prisonerProsperityValue": 1.0,
-  "militiaGrowthMultiplier": 2.0,
-  "prosperityGrowthMultiplier": 3.0,
-  "foodStockChangeMultiplier": 0.2,
+  "prisonerProsperityValue": 2.0,
+  "militiaGrowthBonus": 0.0,
+  "prosperityGrowthMultiplier": 1.0,
   "garrisonWagesMultiplier": 0.5,
-  "garrisonFoodConsumpetionMultiplier": 1.0
+  "garrisonFoodConsumpetionMultiplier": 0.0
 }

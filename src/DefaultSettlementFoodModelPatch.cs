@@ -16,21 +16,12 @@ namespace LightProsperity
             int num2_new = -(int)(garrisonParty != null ? garrisonParty.Party.NumberOfAllMembers * SubModule.Settings.garrisonFoodConsumpetionMultiplier : 0) / 20;
             __result = __result - num2_old + num2_new;
 
-            if (explanation != null)
-            {
-                if (explanation.Lines.Count > 1) explanation.Lines[1].Number = num2_new;
-                foreach (StatExplainer.ExplanationLine line in explanation.Lines)
-                {
-                    line.Number *= SubModule.Settings.foodStockChangeMultiplier;
-                }
-            }
-
-            __result *= SubModule.Settings.foodStockChangeMultiplier;
+            if (explanation != null && explanation.Lines.Count > 1) explanation.Lines[1].Number = num2_new;
         }
 
         static bool Prepare()
         {
-            return SubModule.Settings.foodStockChangeMultiplier != 1 || SubModule.Settings.garrisonFoodConsumpetionMultiplier != 1;
+            return SubModule.Settings.garrisonFoodConsumpetionMultiplier != 1;
         }
     }
 }

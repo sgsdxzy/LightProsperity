@@ -24,7 +24,7 @@ namespace LightProsperity
             }
             if (settlement.IsVillage)
             {
-                double multiplier = (settlement.Prosperity - SubModule.Settings.villageMinProsperityForRecruit) /
+                double multiplier = (settlement.Village.Hearth - SubModule.Settings.villageMinProsperityForRecruit) /
                     (SubModule.Settings.villageProsperityThreshold - SubModule.Settings.villageMinProsperityForRecruit);
                 multiplier = Math.Max(multiplier, 0);
                 multiplier = Math.Pow(multiplier, 0.7);

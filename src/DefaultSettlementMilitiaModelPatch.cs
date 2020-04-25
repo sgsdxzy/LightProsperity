@@ -14,18 +14,15 @@ namespace LightProsperity
         {
             if (explanation != null)
             {
-                foreach (StatExplainer.ExplanationLine line in explanation.Lines)
-                {
-                    line.Number *= SubModule.Settings.militiaGrowthMultiplier;
-                }
+                explanation.AddLine("Prosperity Bonus", SubModule.Settings.militiaGrowthBonus);
             }
 
-            __result *= SubModule.Settings.militiaGrowthMultiplier;
+            __result += SubModule.Settings.militiaGrowthBonus;
         }
 
         static bool Prepare()
         {
-            return SubModule.Settings.militiaGrowthMultiplier != 1;
+            return SubModule.Settings.militiaGrowthBonus != 0;
         }
     }
 }
