@@ -26,9 +26,13 @@ namespace LightProsperity
         private readonly TextObject _enemyText = new TextObject("Enemy Around", (Dictionary<string, TextObject>)null);
         private readonly TextObject _foodWorriesText = new TextObject("Food Running Out", (Dictionary<string, TextObject>)null);
 
-        private readonly float _hearthMultiplier = 0.02f;
+        private readonly float _hearthMultiplier = 0.01f;
         private readonly float _townProsperityMultiplier = 0.01f;
         private readonly float _castleProsperityMultiplier = 0.01f;
+
+        private readonly float _hearthCoeff = SubModule.Settings.villageGrowthCap == 0f ? 0f : 1 / SubModule.Settings.villageGrowthCap;
+        private readonly float _townCoeff = SubModule.Settings.villageGrowthCap == 0f ? 0f : 1 / SubModule.Settings.townGrowthCap;
+        private readonly float _castleCoeff = SubModule.Settings.villageGrowthCap == 0f ? 0f : 1 / SubModule.Settings.castleGrowthCap;
 
         public override float CalculateProsperityChange(Town fortification, StatExplainer explanation = null)
         {
@@ -46,7 +50,7 @@ namespace LightProsperity
             if (village.VillageState == Village.VillageStates.Normal)
             {
                 float newBorn = village.Hearth;
-                float overCrowded = 0.0016f * village.Hearth * village.Hearth;
+                float overCrowded = _hearthCoeff * village.Hearth * village.Hearth;
                 float population = (newBorn - overCrowded) * _hearthMultiplier;
                 if (population > 0)
                 {
@@ -81,7 +85,7 @@ namespace LightProsperity
             if (fortification.IsTown)
             {
                 float newBorn = fortification.Prosperity;
-                float overCrowded = 0.00016f * fortification.Prosperity * fortification.Prosperity;
+                float overCrowded = _townCoeff * fortification.Prosperity * fortification.Prosperity;
                 float population = (newBorn - overCrowded) * _townProsperityMultiplier;
                 if (population > 0)
                 {
@@ -112,7 +116,7 @@ namespace LightProsperity
             if (fortification.IsCastle)
             {
                 float newBorn = fortification.Prosperity;
-                float overCrowded = 0.0007f * fortification.Prosperity * fortification.Prosperity;
+                float overCrowded = _castleCoeff * fortification.Prosperity * fortification.Prosperity;
                 float population = (newBorn - overCrowded) * _castleProsperityMultiplier;
                 if (population > 0)
                 {
@@ -146,7 +150,7 @@ namespace LightProsperity
             {
                 int num4 = fortification.SoldItems.Sum<Town.SellLog>((Func<Town.SellLog, int>)(x => x.Category.Properties != ItemCategory.Property.BonusToProsperity ? 0 : x.Number));
                 if (num4 > 0)
-                    explainedNumber.Add((float)num4 * 3 * SubModule.Settings.prosperityGrowthMultiplier, this._prosperityFromMarketText);
+                    explainedNumber.Add((float)num4 * 3.0f * SubModule.Settings.prosperityGrowthMultiplier, this._prosperityFromMarketText);
             }
             PerkHelper.AddPerkBonusForTown(DefaultPerks.Medicine.PristineStreets, fortification, ref explainedNumber);
             foreach (Building building in fortification.Buildings)

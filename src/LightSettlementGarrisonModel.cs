@@ -28,8 +28,8 @@ namespace LightProsperity
         }
 
         private static int CalculateGarrisonChangeInternal(
-          Settlement settlement,
-          StatExplainer explanation = null)
+            Settlement settlement,
+            StatExplainer explanation = null)
         {
             ExplainedNumber result = new ExplainedNumber(0.0f, explanation, (TextObject)null);
             if (settlement.IsTown || settlement.IsCastle)
@@ -38,8 +38,9 @@ namespace LightProsperity
                 if (settlement.IsStarving)
                 {
                     float foodChange = settlement.Town.FoodChange;
-                    int num = !settlement.Town.Owner.IsStarving || (double)foodChange >= 0.0 ? 
-                        0 : (int)((double)foodChange * SubModule.Settings.garrisonFoodConsumpetionMultiplier / 8.0);
+                    int num = !settlement.Town.Owner.IsStarving || (double)foodChange >= -19.0 ? 
+                        0 : (int)(((double)foodChange + 10.0) * SubModule.Settings.garrisonFoodConsumpetionMultiplier / 10.0);
+
                     result.Add((float)num, LightSettlementGarrisonModel._foodShortageText);
                 }
                 if (settlement.Town.GarrisonParty != null && ((double)settlement.Town.GarrisonParty.Party.NumberOfHealthyMembers + (double)result.ResultNumber) / (double)settlement.Town.GarrisonParty.Party.PartySizeLimit > (double)settlement.Town.GarrisonParty.PaymentRatio)
@@ -58,8 +59,8 @@ namespace LightProsperity
         }
 
         private static void GetSettlementGarrisonChangeDueToIssues(
-          Settlement settlement,
-          ref ExplainedNumber result)
+            Settlement settlement,
+            ref ExplainedNumber result)
         {
             float totalChange;
             if (!IssueManager.DoesSettlementHasIssueEffect(DefaultIssueEffects.SettlementGarrison, settlement, out totalChange))
@@ -68,28 +69,29 @@ namespace LightProsperity
         }
 
         public override int FindNumberOfTroopsToTakeFromGarrison(
-          MobileParty mobileParty,
-          Settlement settlement)
+            MobileParty mobileParty,
+            Settlement settlement)
         {
             MobileParty garrisonParty = settlement.Town.GarrisonParty;
             if (garrisonParty == null)
                 return 0;
             float totalStrength = garrisonParty.Party.TotalStrength;
             float num1 = FactionHelper.FindIdealGarrisonStrengthPerWalledCenter(mobileParty.MapFaction as Kingdom, settlement.OwnerClan) * FactionHelper.OwnerClanEconomyEffectOnGarrisonSizeConstant(settlement.OwnerClan) * (settlement.IsTown ? 2f : 1f);
-            double num2 = (double)Math.Min(12f, (float)mobileParty.Party.PartySizeLimit * mobileParty.PaymentRatio / (float)mobileParty.Party.NumberOfAllMembers) - 1.0;
-            float num3 = (float)Math.Pow((double)totalStrength / (double)num1, 1.5);
-            float num4 = mobileParty.LeaderHero.Clan.Leader == mobileParty.LeaderHero ? 2f : 1f;
-            double num5 = (double)num3;
-            int num6 = MBRandom.RoundRandomized((float)(num2 * num5) * num4);
-            int num7 = 20 * (settlement.IsTown ? 2 : 1);
-            if (num6 > garrisonParty.Party.MemberRoster.TotalRegulars - num7)
-                num6 = garrisonParty.Party.MemberRoster.TotalRegulars - num7;
-            return num6;
+            float num2 = (float)mobileParty.Party.PartySizeLimit * mobileParty.PaymentRatio / (float)mobileParty.Party.NumberOfAllMembers;
+            double num3 = Math.Min(11.0, (double)num2 * Math.Sqrt((double)num2)) - 1.0;
+            float num4 = (float)Math.Pow((double)totalStrength / (double)num1, 1.5);
+            float num5 = mobileParty.LeaderHero.Clan.Leader == mobileParty.LeaderHero ? 2f : 1f;
+            double num6 = (double)num4;
+            int num7 = MBRandom.RoundRandomized((float)(num3 * num6) * num5);
+            int num8 = 25 * (settlement.IsTown ? 2 : 1);
+            if (num7 > garrisonParty.Party.MemberRoster.TotalRegulars - num8)
+                num7 = garrisonParty.Party.MemberRoster.TotalRegulars - num8;
+            return num7;
         }
 
         public override int FindNumberOfTroopsToLeaveToGarrison(
-          MobileParty mobileParty,
-          Settlement settlement)
+            MobileParty mobileParty,
+            Settlement settlement)
         {
             MobileParty garrisonParty = settlement.Town.GarrisonParty;
             float num1 = 0.0f;

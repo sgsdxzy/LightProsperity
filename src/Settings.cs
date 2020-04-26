@@ -52,13 +52,25 @@ namespace LightProsperity
         [JsonProperty("militiaGrowthBonus")]
         public float militiaGrowthBonus { get; set; }
 
-        [JsonProperty("prosperityGrowthMultiplier")]
-        public float prosperityGrowthMultiplier { get; set; }
-
         [JsonProperty("garrisonWagesMultiplier")]
         public float garrisonWagesMultiplier { get; set; }
 
         [JsonProperty("garrisonFoodConsumpetionMultiplier")]
         public float garrisonFoodConsumpetionMultiplier { get; set; }
+
+        [JsonProperty("prosperityGrowthMultiplier")]
+        public float prosperityGrowthMultiplier { get; set; }
+
+        [JsonProperty("newProsperityModel")]
+        public bool newProsperityModel { get; set; }
+
+        [JsonProperty("villageGrowthCap")]
+        public float villageGrowthCap { get; set; }
+
+        [JsonProperty("townGrowthCap")]
+        public float townGrowthCap { get; set; }
+
+        [JsonProperty("castleGrowthCap")]
+        public float castleGrowthCap { get; set; }
     }
 }

@@ -2,21 +2,31 @@
   "townMinProsperityForRecruit": 1000,
   "townProsperityThreshold": 3000,
   "townProsperityPerBonusSlot": 2000,
-  "townRecruitProsperityCost": 3.0,
+  "townRecruitProsperityCost": 2.0,
+
   "villageMinProsperityForRecruit": 100,
   "villageProsperityThreshold": 300,
   "villageProsperityPerBonusSlot": 200,
-  "villageRecruitProsperityCost": 2.0,
+  "villageRecruitProsperityCost": 1.0,
+
   "castleMinProsperityForRecruit": 500,
   "castleProsperityThreshold": 7500, 
   "castleRecruitProsperityCost": 2.0,
+
   "notablePowerThresholdForNobleRecruit": 600,
   "notableNobleRecruitPowerCost": 1,
+  
   "Bonus Slots For Whom": "0: everyone; 1: not at war; 2: same faction; 3: same clan.",
   "bonusSlotsFor": 2,
-  "prisonerProsperityValue": 2.0,
-  "militiaGrowthBonus": 3.0,
-  "prosperityGrowthMultiplier": 1.0,
+
+  "prisonerProsperityValue": 1.0,
+  "militiaGrowthBonus": 0.0,
   "garrisonWagesMultiplier": 0.5,
-  "garrisonFoodConsumpetionMultiplier": 0.0
+  "garrisonFoodConsumpetionMultiplier": 0.0,
+  "prosperityGrowthMultiplier": 1.0,
+
+  "newProsperityModel": false,
+  "villageGrowthCap": 700,
+  "townGrowthCap": 7000,
+  "castleGrowthCap": 1500
 }

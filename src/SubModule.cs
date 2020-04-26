@@ -41,8 +41,14 @@ namespace LightProsperity
 
         private void AddModels(CampaignGameStarter gameStarter)
         {
-            gameStarter?.AddModel(new LightSettlementGarrisonModel());
-            gameStarter?.AddModel(new LightSettlementProsperityModel());
+            if (Settings.garrisonFoodConsumpetionMultiplier != 1.0f)
+            {
+                gameStarter?.AddModel(new LightSettlementGarrisonModel());
+            }
+            if (Settings.newProsperityModel)
+            {
+                gameStarter?.AddModel(new LightSettlementProsperityModel());
+            }
         }
     }
 }
