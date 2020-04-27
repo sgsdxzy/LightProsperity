@@ -30,8 +30,8 @@ namespace LightProsperity
         private readonly TextObject _foodWorriesText = new TextObject("Food Running Out", (Dictionary<string, TextObject>)null);
 
         private readonly float _hearthMultiplier = 0.01f;
-        private readonly float _townProsperityMultiplier = 0.01f;
-        private readonly float _castleProsperityMultiplier = 0.01f;
+        private readonly float _townProsperityMultiplier = 0.0075f;
+        private readonly float _castleProsperityMultiplier = 0.0075f;
         private readonly float _vanillaToRatio = 0.05f;
 
         private readonly float _hearthCoeff = SubModule.Settings.villageGrowthCap == 0f ? 0f : 1 / SubModule.Settings.villageGrowthCap;
