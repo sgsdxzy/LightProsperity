@@ -7,6 +7,9 @@ using TaleWorlds.Core;
 using TaleWorlds.Localization;
 using TaleWorlds.CampaignSystem;
 
+using TaleWorlds.Core;
+using TaleWorlds.MountAndBlade;
+using TaleWorlds.Library;
 
 namespace LightProsperity
 {
@@ -22,13 +25,14 @@ namespace LightProsperity
         private readonly TextObject _issues = new TextObject("{=D7KllIPI}Issues", (Dictionary<string, TextObject>)null);
         private readonly TextObject _newBornText = new TextObject("{=RVas571P}New Born", (Dictionary<string, TextObject>)null);
         private readonly TextObject _raidedText = new TextObject("{=RVas572P}Raided", (Dictionary<string, TextObject>)null);
-        private readonly TextObject _overcrowdedText = new TextObject("Overcrowded", (Dictionary<string, TextObject>)null);
+        private readonly TextObject _populationLossText = new TextObject("Population Loss", (Dictionary<string, TextObject>)null);
         private readonly TextObject _enemyText = new TextObject("Enemy Around", (Dictionary<string, TextObject>)null);
         private readonly TextObject _foodWorriesText = new TextObject("Food Running Out", (Dictionary<string, TextObject>)null);
 
         private readonly float _hearthMultiplier = 0.01f;
         private readonly float _townProsperityMultiplier = 0.01f;
         private readonly float _castleProsperityMultiplier = 0.01f;
+        private readonly float _vanillaToRatio = 0.05f;
 
         private readonly float _hearthCoeff = SubModule.Settings.villageGrowthCap == 0f ? 0f : 1 / SubModule.Settings.villageGrowthCap;
         private readonly float _townCoeff = SubModule.Settings.villageGrowthCap == 0f ? 0f : 1 / SubModule.Settings.townGrowthCap;
@@ -50,15 +54,15 @@ namespace LightProsperity
             if (village.VillageState == Village.VillageStates.Normal)
             {
                 float newBorn = village.Hearth;
-                float overCrowded = _hearthCoeff * village.Hearth * village.Hearth;
-                float population = (newBorn - overCrowded) * _hearthMultiplier;
+                float loss = _hearthCoeff * village.Hearth * village.Hearth;
+                float population = (newBorn - loss) * _hearthMultiplier;
                 if (population > 0)
                 {
                     explainedNumber.Add(population * SubModule.Settings.prosperityGrowthMultiplier, _newBornText);
                 }
                 else
                 {
-                    explainedNumber.Add(population * SubModule.Settings.prosperityGrowthMultiplier, _overcrowdedText);
+                    explainedNumber.Add(population * SubModule.Settings.prosperityGrowthMultiplier, _populationLossText);
                 }
 
                 float enemyRatio = Math.Min(0.8f * village.Settlement.NumberOfEnemiesSpottedAround, 1f);
@@ -79,107 +83,149 @@ namespace LightProsperity
         private float CalculateProsperityChangeInternal(Town fortification, StatExplainer explanation = null)
         {
             ExplainedNumber explainedNumber = new ExplainedNumber(0.0f, explanation, (TextObject)null);
-            if (fortification.Settlement.Culture.ProsperityBonus > 0)
-                explainedNumber.Add((float)fortification.Settlement.Culture.ProsperityBonus * SubModule.Settings.prosperityGrowthMultiplier, this._empireProsperityBonus);
-
+            
+            float newBorn = 0, loss = 0;
+            float enemyRatio = 0, enemyAround = 0;
+            float foodStocksChange = Campaign.Current.Models.SettlementFoodModel.CalculateTownFoodStocksChange(fortification, (StatExplainer)null);
+            float daysLast = fortification.FoodStocks / -foodStocksChange;
+            float foodWorries = 0;
             if (fortification.IsTown)
             {
-                float newBorn = fortification.Prosperity;
-                float overCrowded = _townCoeff * fortification.Prosperity * fortification.Prosperity;
-                float population = (newBorn - overCrowded) * _townProsperityMultiplier;
-                if (population > 0)
-                {
-                    explainedNumber.Add(population * SubModule.Settings.prosperityGrowthMultiplier, _newBornText);
-                } else
-                {
-                    explainedNumber.Add(population * SubModule.Settings.prosperityGrowthMultiplier, _overcrowdedText);
-                }
-                
-                float enemyRatio = Math.Min(0.6f * fortification.Settlement.NumberOfEnemiesSpottedAround, 1f);
-                float enemyAround = enemyRatio * fortification.Prosperity * _townProsperityMultiplier;
-                explainedNumber.Add(-enemyAround * SubModule.Settings.prosperityGrowthMultiplier, _enemyText);
-
-                float foodStocksChange = Campaign.Current.Models.SettlementFoodModel.CalculateTownFoodStocksChange(fortification, (StatExplainer)null);
-                int num1 = !fortification.Owner.IsStarving || (double)foodStocksChange >= 0.0 ? 0 : (int)foodStocksChange;
-                explainedNumber.Add((float)num1 * SubModule.Settings.prosperityGrowthMultiplier, _foodShortageText);
-
-                if (foodStocksChange < 0)
-                {
-                    float daysLast = fortification.FoodStocks / -foodStocksChange;
-                    float foodWorries = Math.Max(1 - daysLast / 21, 0) * fortification.Prosperity * _townProsperityMultiplier;
-                    if (foodWorries > 0)
-                    {
-                        explainedNumber.Add(-foodWorries * SubModule.Settings.prosperityGrowthMultiplier, _foodWorriesText);
-                    }
-                }             
+                newBorn = fortification.Prosperity * _townProsperityMultiplier;
+                loss = _townCoeff * fortification.Prosperity * fortification.Prosperity * _townProsperityMultiplier;                                
+                enemyRatio = Math.Min(0.6f * fortification.Settlement.NumberOfEnemiesSpottedAround, 1f);        
+                foodWorries = daysLast < 0 ? 0 : Math.Max(1 - daysLast / 21, 0) * newBorn;
+                            
             }
             if (fortification.IsCastle)
             {
-                float newBorn = fortification.Prosperity;
-                float overCrowded = _castleCoeff * fortification.Prosperity * fortification.Prosperity;
-                float population = (newBorn - overCrowded) * _castleProsperityMultiplier;
-                if (population > 0)
-                {
-                    explainedNumber.Add(population * SubModule.Settings.prosperityGrowthMultiplier, _newBornText);
-                }
-                else
-                {
-                    explainedNumber.Add(population * SubModule.Settings.prosperityGrowthMultiplier, _overcrowdedText);
-                }
+                newBorn = fortification.Prosperity * _castleProsperityMultiplier;
+                loss = _castleCoeff * fortification.Prosperity * fortification.Prosperity * _castleProsperityMultiplier;
+                enemyRatio = Math.Min(0.4f * fortification.Settlement.NumberOfEnemiesSpottedAround, 1f);                            
+                foodWorries = daysLast < 0 ? 0 : Math.Max(1 - daysLast / 42, 0) * newBorn;
+            }
+            float population = newBorn - loss;
+            if (population > 0)
+            {
+                explainedNumber.Add(population * SubModule.Settings.prosperityGrowthMultiplier, _newBornText);
+            }
+            else
+            {
+                explainedNumber.Add(population * SubModule.Settings.prosperityGrowthMultiplier, _populationLossText);
+            }
+            enemyAround = enemyRatio * newBorn;
+            explainedNumber.Add(-enemyAround * SubModule.Settings.prosperityGrowthMultiplier, _enemyText);
+            float starving = !fortification.Owner.IsStarving || foodStocksChange >= 0.0f ? 0f : foodStocksChange;
+            if (starving < 0)
+            {
+                explainedNumber.Add(starving * SubModule.Settings.prosperityGrowthMultiplier, _foodShortageText);
+            }          
+            if (foodWorries > 0)
+            {
+                explainedNumber.Add(-foodWorries * SubModule.Settings.prosperityGrowthMultiplier, _foodWorriesText);
+            }
 
-                float enemyRatio = Math.Min(0.4f * fortification.Settlement.NumberOfEnemiesSpottedAround, 1f);
-                float enemyAround = enemyRatio * fortification.Prosperity * _castleProsperityMultiplier;
-                explainedNumber.Add(-enemyAround * SubModule.Settings.prosperityGrowthMultiplier, _enemyText);
-
-                float foodStocksChange = Campaign.Current.Models.SettlementFoodModel.CalculateTownFoodStocksChange(fortification, (StatExplainer)null);
-                int num1 = !fortification.Owner.IsStarving || (double)foodStocksChange >= 0.0 ? 0 : (int)foodStocksChange;
-                explainedNumber.Add((float)num1 * SubModule.Settings.prosperityGrowthMultiplier, _foodShortageText);
-
-                if (foodStocksChange < 0)
-                {
-                    float daysLast = fortification.FoodStocks / -foodStocksChange;
-                    float foodWorries = Math.Max(1 - daysLast / 42, 0) * fortification.Prosperity * _castleProsperityMultiplier;
-                    if (foodWorries > 0)
-                    {
-                        explainedNumber.Add(-foodWorries * SubModule.Settings.prosperityGrowthMultiplier, _foodWorriesText);
-                    }
-                }
-            }      
+            if (fortification.Settlement.Culture.ProsperityBonus > 0)
+            {
+                float bonus = (float)fortification.Settlement.Culture.ProsperityBonus * _vanillaToRatio * newBorn;
+                explainedNumber.Add(bonus * SubModule.Settings.prosperityGrowthMultiplier, this._empireProsperityBonus);
+            }              
 
             if (fortification.IsTown)
             {
                 int num4 = fortification.SoldItems.Sum<Town.SellLog>((Func<Town.SellLog, int>)(x => x.Category.Properties != ItemCategory.Property.BonusToProsperity ? 0 : x.Number));
                 if (num4 > 0)
-                    explainedNumber.Add((float)num4 * 3.0f * SubModule.Settings.prosperityGrowthMultiplier, this._prosperityFromMarketText);
+                {
+                    float bonus = (float)num4 * 2.0f * _vanillaToRatio * newBorn;
+                    explainedNumber.Add(bonus * SubModule.Settings.prosperityGrowthMultiplier, this._prosperityFromMarketText);
+                }             
             }
+
+            float oldNumber = explainedNumber.ResultNumber;
             PerkHelper.AddPerkBonusForTown(DefaultPerks.Medicine.PristineStreets, fortification, ref explainedNumber);
+            float newNumber = explainedNumber.ResultNumber;
+            float diff = newNumber - oldNumber;
+            if (diff !=0 && explainedNumber.Explainer != null)
+            {
+                explainedNumber.Explainer.Lines.Last().Number *= _vanillaToRatio * newBorn;
+            }
+            float resultDiff = diff * _vanillaToRatio * newBorn + oldNumber - newNumber;
+            
             foreach (Building building in fortification.Buildings)
             {
                 int buildingEffectAmount = building.GetBuildingEffectAmount(DefaultBuildingEffects.Prosperity);
                 if ((!building.BuildingType.IsDefaultProject || fortification.CurrentBuilding == building) && buildingEffectAmount > 0)
-                    explainedNumber.Add((float)buildingEffectAmount * SubModule.Settings.prosperityGrowthMultiplier, building.Name);
+                {
+                    float bonus = (float)buildingEffectAmount * _vanillaToRatio * newBorn;
+                    explainedNumber.Add(bonus * SubModule.Settings.prosperityGrowthMultiplier, building.Name);
+                }
+                    
                 if (building.BuildingType == DefaultBuildingTypes.SettlementAquaducts)
+                {
+                    oldNumber = explainedNumber.ResultNumber;
                     PerkHelper.AddPerkBonusForTown(DefaultPerks.Medicine.CleanInfrastructure, fortification, ref explainedNumber);
+                    newNumber = explainedNumber.ResultNumber;
+                    diff = newNumber - oldNumber;
+                    if (diff != 0 && explainedNumber.Explainer != null)
+                    {
+                        explainedNumber.Explainer.Lines.Last().Number *= _vanillaToRatio * newBorn;
+                    }
+                    resultDiff += diff * _vanillaToRatio * newBorn + oldNumber - newNumber;
+                }
+                    
             }
             if ((double)fortification.Loyalty > 75.0)
-                explainedNumber.Add(Campaign.Current.Models.SettlementLoyaltyModel.HighLoyaltyProsperityEffect * SubModule.Settings.prosperityGrowthMultiplier, this._loyaltyText);
+            {
+                float bonus = Campaign.Current.Models.SettlementLoyaltyModel.HighLoyaltyProsperityEffect * _vanillaToRatio * newBorn;
+                explainedNumber.Add(bonus * SubModule.Settings.prosperityGrowthMultiplier, this._loyaltyText);
+            }
+                
             else if ((double)fortification.Loyalty <= 50.0)
-                explainedNumber.Add(Campaign.Current.Models.SettlementLoyaltyModel.LowLoyaltyProsperityEffect * SubModule.Settings.prosperityGrowthMultiplier, this._loyaltyText);
+            {
+                float bonus = Campaign.Current.Models.SettlementLoyaltyModel.LowLoyaltyProsperityEffect * _vanillaToRatio * newBorn;
+                explainedNumber.Add(bonus * SubModule.Settings.prosperityGrowthMultiplier, this._loyaltyText);
+            }
+                
             if (fortification.Settlement.OwnerClan.Kingdom != null)
             {
                 if (fortification.Settlement.OwnerClan.Kingdom.ActivePolicies.Contains(DefaultPolicies.Serfdom))
-                    explainedNumber.Add(-1f * SubModule.Settings.prosperityGrowthMultiplier, DefaultPolicies.Serfdom.Name);
+                {
+                    float bonus = -1f * _vanillaToRatio * newBorn;
+                    explainedNumber.Add(bonus * SubModule.Settings.prosperityGrowthMultiplier, DefaultPolicies.Serfdom.Name);
+                }                   
                 if (fortification.Settlement.OwnerClan.Kingdom.ActivePolicies.Contains(DefaultPolicies.RoadTolls))
-                    explainedNumber.Add(-0.2f * SubModule.Settings.prosperityGrowthMultiplier, DefaultPolicies.RoadTolls.Name);
+                {
+                    float bonus = -0.2f * _vanillaToRatio * newBorn;
+                    explainedNumber.Add(bonus * SubModule.Settings.prosperityGrowthMultiplier, DefaultPolicies.RoadTolls.Name);
+                }
                 if (fortification.Settlement.OwnerClan.Kingdom.RulingClan == fortification.Settlement.OwnerClan && fortification.Settlement.OwnerClan.Kingdom.ActivePolicies.Contains(DefaultPolicies.ImperialTowns))
-                    explainedNumber.Add(1f * SubModule.Settings.prosperityGrowthMultiplier, DefaultPolicies.ImperialTowns.Name);
+                {
+                    float bonus = 1f * _vanillaToRatio * newBorn;
+                    explainedNumber.Add(bonus * SubModule.Settings.prosperityGrowthMultiplier, DefaultPolicies.ImperialTowns.Name);
+                }
                 if (fortification.Settlement.OwnerClan.Kingdom.ActivePolicies.Contains(DefaultPolicies.CrownDuty))
-                    explainedNumber.Add(-1f * SubModule.Settings.prosperityGrowthMultiplier, DefaultPolicies.CrownDuty.Name);
+                {
+                    float bonus = -1f * _vanillaToRatio * newBorn;
+                    explainedNumber.Add(bonus * SubModule.Settings.prosperityGrowthMultiplier, DefaultPolicies.CrownDuty.Name);
+                }
                 if (fortification.Settlement.OwnerClan.Kingdom.ActivePolicies.Contains(DefaultPolicies.WarTax))
-                    explainedNumber.Add(-1f * SubModule.Settings.prosperityGrowthMultiplier, DefaultPolicies.WarTax.Name);
+                {
+                    float bonus = -1f * _vanillaToRatio * newBorn;
+                    explainedNumber.Add(bonus * SubModule.Settings.prosperityGrowthMultiplier, DefaultPolicies.WarTax.Name);
+                }
             }
+
+            oldNumber = explainedNumber.ResultNumber;
             this.GetSettlementProsperityChangeDueToIssues(fortification.Settlement, ref explainedNumber);
-            return explainedNumber.ResultNumber;
+            newNumber = explainedNumber.ResultNumber;
+            diff = newNumber - oldNumber;
+            if (diff != 0 && explainedNumber.Explainer != null)
+            {
+                explainedNumber.Explainer.Lines.Last().Number *= _vanillaToRatio * newBorn;
+            }
+            resultDiff += diff * _vanillaToRatio * newBorn + oldNumber - newNumber;
+
+            return explainedNumber.ResultNumber + resultDiff;
         }
 
         private void GetSettlementProsperityChangeDueToIssues(

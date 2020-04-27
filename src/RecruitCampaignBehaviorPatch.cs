@@ -173,11 +173,12 @@ namespace LightProsperity
         {
             foreach (Settlement settlement in Campaign.Current.Settlements)
             {
-                try
+
+                if (settlement.IsTown && !settlement.Town.IsRebeling || settlement.IsVillage && !settlement.Village.Bound.Town.IsRebeling)
                 {
-                    if (settlement.IsTown && !settlement.Town.IsRebeling || settlement.IsVillage && !settlement.Village.Bound.Town.IsRebeling)
+                    foreach (Hero notable in settlement.Notables)
                     {
-                        foreach (Hero notable in settlement.Notables)
+                        try
                         {
                             if (notable.CanHaveRecruits)
                             {
@@ -214,15 +215,16 @@ namespace LightProsperity
                                 }
                             }
                         }
+                        catch (System.IndexOutOfRangeException)
+                        {
+                            // pass
+                        }
                     }
-                    if (settlement.IsCastle)
-                    {
-                        UpdateCastleNobleRecruit(settlement);
-                    }
-                } catch (System.IndexOutOfRangeException)
-                {
-                    // pass
                 }
+                if (settlement.IsCastle && !settlement.IsRebelling)
+                {
+                    UpdateCastleNobleRecruit(settlement);
+                }              
             }
             return false;
         }

@@ -26,7 +26,7 @@
   "prosperityGrowthMultiplier": 1.0,
 
   "newProsperityModel": false,
-  "villageGrowthCap": 700,
+  "villageGrowthCap": 800,
   "townGrowthCap": 7000,
   "castleGrowthCap": 1500
 }
