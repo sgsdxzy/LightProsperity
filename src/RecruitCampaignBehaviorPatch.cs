@@ -98,7 +98,7 @@ namespace LightProsperity
         {
             double difficulty = 0.07;
             double num2 = 200;
-            double num3 = num2 * num2 / (notable.Power * notable.Power);
+            double num3 = num2 * num2 / (Math.Max(50f, notable.Power) * Math.Max(50f, notable.Power));
             double levelAdjust = notable.VolunteerTypes[index].Level;
             double chance = 1 / (Math.Pow(levelAdjust, 2) * num3 * difficulty);
 
@@ -140,7 +140,7 @@ namespace LightProsperity
             }
         }
 
-        static int GetDailyCastleNobleRecruitCount(Settlement settlement)
+        private static int GetDailyCastleNobleRecruitCount(Settlement settlement)
         {
             double chance = (settlement.Prosperity - SubModule.Settings.castleMinProsperityForRecruit) / 
                 (SubModule.Settings.castleProsperityThreshold - SubModule.Settings.castleMinProsperityForRecruit);
@@ -149,7 +149,7 @@ namespace LightProsperity
             return num;
         }
 
-        static void UpdateCastleNobleRecruit(Settlement settlement)
+        private static void UpdateCastleNobleRecruit(Settlement settlement)
         {
             int num = GetDailyCastleNobleRecruitCount(settlement);
             if (num > 0)

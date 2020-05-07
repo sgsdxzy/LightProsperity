@@ -38,7 +38,7 @@ namespace LightProsperity
                 if (settlement.IsStarving)
                 {
                     float foodChange = settlement.Town.FoodChange;
-                    int num = !settlement.Town.Owner.IsStarving || (double)foodChange >= -19.0 ? 
+                    int num = !settlement.Town.Owner.IsStarving || (double)foodChange >= -19.0 ?
                         0 : (int)(((double)foodChange + 10.0) * SubModule.Settings.garrisonFoodConsumpetionMultiplier / 10.0);
 
                     result.Add((float)num, LightSettlementGarrisonModel._foodShortageText);
@@ -70,13 +70,14 @@ namespace LightProsperity
 
         public override int FindNumberOfTroopsToTakeFromGarrison(
             MobileParty mobileParty,
-            Settlement settlement)
+            Settlement settlement,
+            float defaultIdealGarrisonStrengthPerWalledCenter = 0.0f)
         {
             MobileParty garrisonParty = settlement.Town.GarrisonParty;
             if (garrisonParty == null)
                 return 0;
             float totalStrength = garrisonParty.Party.TotalStrength;
-            float num1 = FactionHelper.FindIdealGarrisonStrengthPerWalledCenter(mobileParty.MapFaction as Kingdom, settlement.OwnerClan) * FactionHelper.OwnerClanEconomyEffectOnGarrisonSizeConstant(settlement.OwnerClan) * (settlement.IsTown ? 2f : 1f);
+            float num1 = ((double)defaultIdealGarrisonStrengthPerWalledCenter > 0.100000001490116 ? defaultIdealGarrisonStrengthPerWalledCenter : FactionHelper.FindIdealGarrisonStrengthPerWalledCenter(mobileParty.MapFaction as Kingdom, settlement.OwnerClan)) * FactionHelper.OwnerClanEconomyEffectOnGarrisonSizeConstant(settlement.OwnerClan) * (settlement.IsTown ? 2f : 1f);
             float num2 = (float)mobileParty.Party.PartySizeLimit * mobileParty.PaymentRatio / (float)mobileParty.Party.NumberOfAllMembers;
             double num3 = Math.Min(11.0, (double)num2 * Math.Sqrt((double)num2)) - 1.0;
             float num4 = (float)Math.Pow((double)totalStrength / (double)num1, 1.5);

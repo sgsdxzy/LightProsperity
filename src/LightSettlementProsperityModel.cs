@@ -3,13 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
-using TaleWorlds.CampaignSystem;
-
-using TaleWorlds.Core;
-using TaleWorlds.MountAndBlade;
-using TaleWorlds.Library;
 
 namespace LightProsperity
 {
