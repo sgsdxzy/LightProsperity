@@ -2,3 +2,4 @@ src/.vs/
 src/obj/
 *.dll
 *.7z
+*.png
