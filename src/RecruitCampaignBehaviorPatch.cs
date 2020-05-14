@@ -16,7 +16,7 @@ namespace LightProsperity
             Hero individual,
             CharacterObject troop,
             int count)
-        {           
+        {
             if (individual != null)
             {
                 Settlement settlement = individual.CurrentSettlement;
@@ -39,7 +39,7 @@ namespace LightProsperity
                         }
                     }
                 }
-            }        
+            }
         }
     }
 
@@ -75,28 +75,36 @@ namespace LightProsperity
             return hero.VolunteerTypes[bit] != null;
         }
 
-        private static void GenerateBasicTroop(Hero notable, int index)
+        private static bool GenerateBasicTroop(Hero notable, int index)
         {
             CultureObject cultureObject = notable.CurrentSettlement != null ? notable.CurrentSettlement.Culture : notable.Clan.Culture;
-            double notableMinPowerForNobleRecruit = 200;
-            double chance = ((double)notable.Power - notableMinPowerForNobleRecruit) / (SubModule.Settings.notablePowerThresholdForNobleRecruit - notableMinPowerForNobleRecruit);
             // chance = Math.Max(chance, 0);
             // chance = Math.Sqrt(chance);
-            if (HeroHelper.HeroShouldGiveEliteTroop(notable) && ((double)MBRandom.RandomFloat < chance))
+            if (HeroHelper.HeroShouldGiveEliteTroop(notable))
             {
-                notable.VolunteerTypes[index] = cultureObject.EliteBasicTroop;
-                int powerMinus = Math.Min(notable.Power - 1, (int)SubModule.Settings.notableNobleRecruitPowerCost);
-                notable.AddPower(-powerMinus);
+                double notableMinPowerForNobleRecruit = 200;
+                double chance = ((double)notable.Power - notableMinPowerForNobleRecruit) / (SubModule.Settings.notablePowerThresholdForNobleRecruit - notableMinPowerForNobleRecruit);
+                if ((double)MBRandom.RandomFloat < chance)
+                {
+                    notable.VolunteerTypes[index] = cultureObject.EliteBasicTroop;
+                    int powerMinus = Math.Min(notable.Power - 1, (int)SubModule.Settings.notableNobleRecruitPowerCost);
+                    notable.AddPower(-powerMinus);
+                }
+                else
+                {
+                    return false;
+                }
             }
             else
             {
                 notable.VolunteerTypes[index] = cultureObject.BasicTroop;
             }
+            return true;
         }
 
         private static double GetTroopUpgradeChance(Hero notable, int index)
         {
-            double difficulty = 0.07;
+            double difficulty = 0.1;
             double num2 = 200;
             double num3 = num2 * num2 / (Math.Max(50f, notable.Power) * Math.Max(50f, notable.Power));
             double levelAdjust = notable.VolunteerTypes[index].Level;
@@ -106,7 +114,7 @@ namespace LightProsperity
         }
 
         private static void UpgradeTroop(Hero notable, int index)
-        {  
+        {
             if (notable.VolunteerTypes[index].UpgradeTargets != null)
             {
                 notable.VolunteerTypes[index] = notable.VolunteerTypes[index].UpgradeTargets[MBRandom.RandomInt(notable.VolunteerTypes[index].UpgradeTargets.Length)];
@@ -142,7 +150,7 @@ namespace LightProsperity
 
         private static int GetDailyCastleNobleRecruitCount(Settlement settlement)
         {
-            double chance = (settlement.Prosperity - SubModule.Settings.castleMinProsperityForRecruit) / 
+            double chance = (settlement.Prosperity - SubModule.Settings.castleMinProsperityForRecruit) /
                 (SubModule.Settings.castleProsperityThreshold - SubModule.Settings.castleMinProsperityForRecruit);
             int num = (int)Math.Floor(chance);
             num += (double)MBRandom.RandomFloat < (chance - num) ? 1 : 0;
@@ -165,7 +173,7 @@ namespace LightProsperity
                 {
                     settlement.Town.GarrisonParty.MemberRoster.AddToCounts(troop, count, false, 0, 0, true, -1);
                     settlement.Prosperity -= SubModule.Settings.castleRecruitProsperityCost * count;
-                }          
+                }
             }
         }
 
@@ -191,7 +199,11 @@ namespace LightProsperity
                                         flag = true;
                                         if (!IsBitSet(notable, index))
                                         {
-                                            GenerateBasicTroop(notable, index);
+                                            bool generated = GenerateBasicTroop(notable, index);
+                                            if (!generated)
+                                            {
+                                                continue;
+                                            }
                                             for (int i = 0; i < 4; i++)
                                             {
                                                 if ((double)MBRandom.RandomFloat < GetTroopUpgradeChance(notable, index))
@@ -224,7 +236,7 @@ namespace LightProsperity
                 if (settlement.IsCastle && !settlement.IsRebelling)
                 {
                     UpdateCastleNobleRecruit(settlement);
-                }              
+                }
             }
             return false;
         }
