@@ -1,6 +1,6 @@
-﻿using System;
-using HarmonyLib;
+﻿using HarmonyLib;
 using Helpers;
+using System;
 using TaleWorlds.CampaignSystem;
 
 
@@ -59,11 +59,12 @@ namespace LightProsperity
                         num8 = buyerHero.Clan == sellerHero.CurrentSettlement.OwnerClan ? num8 : 0;
                         break;
                 }
-            } else
+            }
+            else
             {
                 num8 = num8_0;
             }
-            
+
             __result = Math.Max(0, num1 + num6 + num2 + num3 + num4 + num7 + num8);
             return false;
         }

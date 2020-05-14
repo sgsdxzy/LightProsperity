@@ -10,7 +10,7 @@ namespace LightProsperity
     {
         static void Postfix(ref float __result,
             Town fortification, StatExplainer explanation)
-        {    
+        {
             if (explanation != null)
             {
                 foreach (StatExplainer.ExplanationLine line in explanation.Lines)

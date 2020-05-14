@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
 using Helpers;
 using System;
-using TaleWorlds.Core;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.CampaignSystem.SandBox.CampaignBehaviors;
+using TaleWorlds.Core;
 
 
 namespace LightProsperity
