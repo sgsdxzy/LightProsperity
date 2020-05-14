@@ -8,23 +8,23 @@ namespace LightProsperity
     [HarmonyPatch(typeof(DefaultSettlementProsperityModel), "CalculateProsperityChange")]
     public class CalculateProsperityChangePatch
     {
-        static void Postfix(ref float __result,
+        public static void Postfix(ref float __result,
             Town fortification, StatExplainer explanation)
         {
             if (explanation != null)
             {
                 foreach (StatExplainer.ExplanationLine line in explanation.Lines)
                 {
-                    line.Number *= SubModule.Settings.prosperityGrowthMultiplier;
+                    line.Number *= Settings.Instance.ProsperityGrowthMultiplier;
                 }
             }
 
-            __result *= SubModule.Settings.prosperityGrowthMultiplier;
+            __result *= Settings.Instance.ProsperityGrowthMultiplier;
         }
 
-        static bool Prepare()
+        public static bool Prepare()
         {
-            return !SubModule.Settings.newProsperityModel && SubModule.Settings.prosperityGrowthMultiplier != 1;
+            return !Settings.Instance.NewProsperityModel && Settings.Instance.ProsperityGrowthMultiplier != 1;
         }
     }
 
@@ -32,23 +32,23 @@ namespace LightProsperity
     [HarmonyPatch(typeof(DefaultSettlementProsperityModel), "CalculateHearthChange")]
     public class CalculateHearthChangePatch
     {
-        static void Postfix(ref float __result,
+        public static void Postfix(ref float __result,
             Village village, StatExplainer explanation)
         {
             if (explanation != null)
             {
                 foreach (StatExplainer.ExplanationLine line in explanation.Lines)
                 {
-                    line.Number *= SubModule.Settings.prosperityGrowthMultiplier;
+                    line.Number *= Settings.Instance.ProsperityGrowthMultiplier;
                 }
             }
 
-            __result *= SubModule.Settings.prosperityGrowthMultiplier;
+            __result *= Settings.Instance.ProsperityGrowthMultiplier;
         }
 
-        static bool Prepare()
+        public static bool Prepare()
         {
-            return !SubModule.Settings.newProsperityModel && SubModule.Settings.prosperityGrowthMultiplier != 1;
+            return !Settings.Instance.NewProsperityModel && Settings.Instance.ProsperityGrowthMultiplier != 1;
         }
     }
 }

@@ -39,7 +39,7 @@ namespace LightProsperity
                 {
                     float foodChange = settlement.Town.FoodChange;
                     int num = !settlement.Town.Owner.IsStarving || (double)foodChange >= -19.0 ?
-                        0 : (int)(((double)foodChange + 10.0) * SubModule.Settings.garrisonFoodConsumpetionMultiplier / 10.0);
+                        0 : (int)(((double)foodChange + 10.0) * Settings.Instance.GarrisonFoodConsumpetionMultiplier / 10.0);
 
                     result.Add((float)num, LightSettlementGarrisonModel._foodShortageText);
                 }

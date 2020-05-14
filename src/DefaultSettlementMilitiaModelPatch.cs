@@ -8,21 +8,21 @@ namespace LightProsperity
     [HarmonyPatch(typeof(DefaultSettlementMilitiaModel), "CalculateMilitiaChange")]
     public class CalculateMilitiaChangePatch
     {
-        static void Postfix(ref float __result,
+        public static void Postfix(ref float __result,
             Settlement settlement,
             StatExplainer explanation)
         {
             if (explanation != null)
             {
-                explanation.AddLine("Prosperity Bonus", SubModule.Settings.militiaGrowthBonus);
+                explanation.AddLine("Prosperity Bonus", Settings.Instance.MilitiaGrowthBonus);
             }
 
-            __result += SubModule.Settings.militiaGrowthBonus;
+            __result += Settings.Instance.MilitiaGrowthBonus;
         }
 
-        static bool Prepare()
+        public static bool Prepare()
         {
-            return SubModule.Settings.militiaGrowthBonus != 0;
+            return Settings.Instance.MilitiaGrowthBonus != 0;
         }
     }
 }

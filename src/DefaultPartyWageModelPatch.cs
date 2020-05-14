@@ -8,17 +8,17 @@ namespace LightProsperity
     [HarmonyPatch(typeof(DefaultPartyWageModel), "GetTotalWage")]
     public class GetTotalWagePatch
     {
-        static void Postfix(ref int __result, MobileParty mobileParty, StatExplainer explanation = null)
+        public static void Postfix(ref int __result, MobileParty mobileParty, StatExplainer explanation = null)
         {
             if (mobileParty.IsGarrison)
             {
-                __result = (int)(__result * SubModule.Settings.garrisonWagesMultiplier);
+                __result = (int)(__result * Settings.Instance.GarrisonWagesMultiplier);
             }
         }
 
-        static bool Prepare()
+        public static bool Prepare()
         {
-            return SubModule.Settings.garrisonWagesMultiplier != 1;
+            return Settings.Instance.ModifyGarrisonConsumption;
         }
     }
 }

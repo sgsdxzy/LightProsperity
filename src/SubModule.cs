@@ -10,27 +10,16 @@ namespace LightProsperity
 {
     public class SubModule : MBSubModuleBase
     {
-        public static Settings Settings { get; private set; }
+        private bool Patched = false;
 
-        private static void LoadSettings()
+        protected override void OnBeforeInitialModuleScreenSetAsRoot()
         {
-            string configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.json");
-            try
+            if (!Patched)
             {
-                SubModule.Settings = JsonConvert.DeserializeObject<Settings>(File.ReadAllText(configPath));
+                var harmony = new Harmony("mod.bannerlord.lightprosperity");
+                harmony.PatchAll();
+                Patched = true;
             }
-            catch
-            {
-            }
-        }
-
-        protected override void OnSubModuleLoad()
-        {
-            base.OnSubModuleLoad();
-
-            SubModule.LoadSettings();
-            var harmony = new Harmony("mod.bannerlord.light");
-            harmony.PatchAll();
         }
 
         protected override void OnGameStart(Game game, IGameStarter gameStarterObject)
@@ -41,11 +30,11 @@ namespace LightProsperity
 
         private void AddModels(CampaignGameStarter gameStarter)
         {
-            if (Settings.garrisonFoodConsumpetionMultiplier != 1.0f)
+            if (Settings.Instance.ModifyGarrisonConsumption)
             {
                 gameStarter?.AddModel(new LightSettlementGarrisonModel());
             }
-            if (Settings.newProsperityModel)
+            if (Settings.Instance.NewProsperityModel)
             {
                 gameStarter?.AddModel(new LightSettlementProsperityModel());
             }

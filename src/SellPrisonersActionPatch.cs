@@ -8,14 +8,14 @@ namespace LightProsperity
     [HarmonyPatch(typeof(SellPrisonersAction), "ApplyInternal")]
     public class ApplyInternalPatch
     {
-        static void Prefix(MobileParty sellerParty,
+        public static void Prefix(MobileParty sellerParty,
             TroopRoster prisoners,
             Settlement currentSettlement,
             bool applyGoldChange)
         {
             if (currentSettlement != null)
             {
-                currentSettlement.Prosperity += prisoners.TotalRegulars * SubModule.Settings.prisonerProsperityValue;
+                currentSettlement.Prosperity += prisoners.TotalRegulars * Settings.Instance.PrisonerProsperityValue;
             }
         }
     }

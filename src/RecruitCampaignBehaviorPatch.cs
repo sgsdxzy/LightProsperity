@@ -11,7 +11,7 @@ namespace LightProsperity
     [HarmonyPatch(typeof(RecruitCampaignBehavior), "OnTroopRecruited")]
     public class OnTroopRecruitedPatch
     {
-        static void Postfix(Hero arg1,
+        public static void Postfix(Hero arg1,
             Settlement arg2,
             Hero individual,
             CharacterObject troop,
@@ -24,7 +24,7 @@ namespace LightProsperity
                 {
                     if (settlement.IsTown)
                     {
-                        settlement.Prosperity -= SubModule.Settings.townRecruitProsperityCost * count;
+                        settlement.Prosperity -= Settings.Instance.TownRecruitProsperityCost * count;
                         if (settlement.Prosperity < 0)
                         {
                             settlement.Prosperity = 0;
@@ -32,7 +32,7 @@ namespace LightProsperity
                     }
                     if (settlement.IsVillage)
                     {
-                        settlement.Village.Hearth -= SubModule.Settings.villageRecruitProsperityCost * count;
+                        settlement.Village.Hearth -= Settings.Instance.VillageRecruitProsperityCost * count;
                         if (settlement.Village.Hearth < 0)
                         {
                             settlement.Village.Hearth = 0;
@@ -46,18 +46,18 @@ namespace LightProsperity
     [HarmonyPatch(typeof(RecruitCampaignBehavior), "OnUnitRecruited")]
     public class OnUnitRecruitedPatch
     {
-        static void Postfix(CharacterObject arg1, int count)
+        public static void Postfix(CharacterObject arg1, int count)
         {
             Settlement settlement = Hero.MainHero.CurrentSettlement;
             if (settlement != null)
             {
                 if (settlement.IsTown)
                 {
-                    settlement.Prosperity -= SubModule.Settings.townRecruitProsperityCost * count;
+                    settlement.Prosperity -= Settings.Instance.TownRecruitProsperityCost * count;
                 }
                 if (settlement.IsVillage)
                 {
-                    settlement.Village.Hearth -= SubModule.Settings.villageRecruitProsperityCost * count;
+                    settlement.Village.Hearth -= Settings.Instance.VillageRecruitProsperityCost * count;
                     if (settlement.Village.Hearth < 0)
                     {
                         settlement.Village.Hearth = 0;
@@ -83,11 +83,11 @@ namespace LightProsperity
             if (HeroHelper.HeroShouldGiveEliteTroop(notable))
             {
                 double notableMinPowerForNobleRecruit = 200;
-                double chance = ((double)notable.Power - notableMinPowerForNobleRecruit) / (SubModule.Settings.notablePowerThresholdForNobleRecruit - notableMinPowerForNobleRecruit);
+                double chance = ((double)notable.Power - notableMinPowerForNobleRecruit) / (Settings.Instance.NotablePowerThresholdForNobleRecruit - notableMinPowerForNobleRecruit);
                 if ((double)MBRandom.RandomFloat < chance)
                 {
                     notable.VolunteerTypes[index] = cultureObject.EliteBasicTroop;
-                    int powerMinus = Math.Min(notable.Power - 1, (int)SubModule.Settings.notableNobleRecruitPowerCost);
+                    int powerMinus = Math.Min(notable.Power - 1, (int)Settings.Instance.NotableNobleRecruitPowerCost);
                     notable.AddPower(-powerMinus);
                 }
                 else
@@ -150,8 +150,8 @@ namespace LightProsperity
 
         private static int GetDailyCastleNobleRecruitCount(Settlement settlement)
         {
-            double chance = (settlement.Prosperity - SubModule.Settings.castleMinProsperityForRecruit) /
-                (SubModule.Settings.castleProsperityThreshold - SubModule.Settings.castleMinProsperityForRecruit);
+            double chance = (settlement.Prosperity - Settings.Instance.CastleMinProsperityForRecruit) /
+                (Settings.Instance.CastleProsperityThreshold - Settings.Instance.CastleMinProsperityForRecruit);
             int num = (int)Math.Floor(chance);
             num += (double)MBRandom.RandomFloat < (chance - num) ? 1 : 0;
             return num;
@@ -172,12 +172,12 @@ namespace LightProsperity
                 if (count > 0)
                 {
                     settlement.Town.GarrisonParty.MemberRoster.AddToCounts(troop, count, false, 0, 0, true, -1);
-                    settlement.Prosperity -= SubModule.Settings.castleRecruitProsperityCost * count;
+                    settlement.Prosperity -= Settings.Instance.CastleRecruitProsperityCost * count;
                 }
             }
         }
 
-        static bool Prefix(ref bool initialRunning)
+        public static bool Prefix(ref bool initialRunning)
         {
             foreach (Settlement settlement in Campaign.Current.Settlements)
             {

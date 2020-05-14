@@ -9,7 +9,7 @@ namespace LightProsperity
     [HarmonyPatch(typeof(HeroHelper), "MaximumIndexHeroCanRecruitFromHero")]
     public class MaximumIndexHeroCanRecruitFromHeroPatch
     {
-        static bool Prefix(ref int __result,
+        public static bool Prefix(ref int __result,
             Hero buyerHero,
             Hero sellerHero,
             int useValueAsRelation)
@@ -32,19 +32,19 @@ namespace LightProsperity
                 if (settlement.IsTown)
                 {
                     float prosperity = settlement.Prosperity;
-                    num8_0 = (int)Math.Floor((prosperity - SubModule.Settings.townProsperityThreshold) / SubModule.Settings.townProsperityPerBonusSlot);
+                    num8_0 = (int)Math.Floor((prosperity - Settings.Instance.TownProsperityThreshold) / Settings.Instance.TownProsperityPerBonusSlot);
                 }
                 if (settlement.IsVillage)
                 {
                     float prosperity = settlement.Village.Hearth;
-                    num8_0 = (int)Math.Floor((prosperity - SubModule.Settings.villageProsperityThreshold) / SubModule.Settings.villageProsperityPerBonusSlot);
+                    num8_0 = (int)Math.Floor((prosperity - Settings.Instance.VillageProsperityThreshold) / Settings.Instance.VillageProsperityPerBonusSlot);
                 }
             }
 
             int num8 = 0;
             if (num8_0 > 0)
             {
-                switch (SubModule.Settings.bonusSlotsFor)
+                switch (Settings.Instance.BonusSlotsFor.SelectedIndex)
                 {
                     case 0:
                         num8 = num8_0;
