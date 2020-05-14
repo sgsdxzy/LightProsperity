@@ -73,7 +73,7 @@ namespace LightProsperity
         [SettingPropertyGroup(groupName: "Town Settings")]
         public int TownProsperityThreshold { get; set; } = 3000;
 
-        [SettingPropertyInteger(displayName: "Town Prosperity Per Bonus Slot", minValue: 0, maxValue: 10000, Order = 2, RequireRestart = false, HintText = "Every how much prosperity past the threshold gives one extra recruitment slot.")]
+        [SettingPropertyInteger(displayName: "Town Prosperity Per Bonus Slot", minValue: 0, maxValue: 10000, Order = 2, RequireRestart = false, HintText = "Amount of prosperity past the threshold required for one extra recruitment slot.")]
         [SettingPropertyGroup(groupName: "Town Settings")]
         public int TownProsperityPerBonusSlot { get; set; } = 2000;
 
@@ -90,7 +90,7 @@ namespace LightProsperity
         [SettingPropertyGroup(groupName: "Village Settings")]
         public int VillageProsperityThreshold { get; set; } = 300;
 
-        [SettingPropertyInteger(displayName: "Village Hearth Per Bonus Slot", minValue: 0, maxValue: 1000, Order = 2, RequireRestart = false, HintText = "Every how much hearth past the threshold gives one extra recruitment slot.")]
+        [SettingPropertyInteger(displayName: "Village Hearth Per Bonus Slot", minValue: 0, maxValue: 1000, Order = 2, RequireRestart = false, HintText = "Amount of hearth past the threshold required for one extra recruitment slot.")]
         [SettingPropertyGroup(groupName: "Village Settings")]
         public int VillageProsperityPerBonusSlot { get; set; } = 200;
 
