@@ -34,6 +34,12 @@ namespace LightProsperity
         private readonly float _townCoeff = SubModule.Settings.villageGrowthCap == 0f ? 0f : 1 / SubModule.Settings.townGrowthCap;
         private readonly float _castleCoeff = SubModule.Settings.villageGrowthCap == 0f ? 0f : 1 / SubModule.Settings.castleGrowthCap;
 
+        internal static void AddDefaultDailyBonus(Town fortification, ref ExplainedNumber result)
+        {
+            float num = (float)((double)fortification.Construction * (double)fortification.CurrentBuilding.BuildingType.Effects[0].Level1Effect * 0.00999999977648258);
+            result.Add(num, fortification.CurrentBuilding.BuildingType.Name);
+        }
+
         public override float CalculateProsperityChange(Town fortification, StatExplainer explanation = null)
         {
             return this.CalculateProsperityChangeInternal(fortification, explanation);
@@ -67,11 +73,11 @@ namespace LightProsperity
             }          
             else if (village.VillageState == Village.VillageStates.Looted)
                 explainedNumber.Add(-village.Hearth * 0.02f, this._raidedText);
-            if (village.Bound != null && (double)explainedNumber.ResultNumber > 0.0)
+            if (village.Bound != null)
             {
-                ExplainedNumber bonuses = new ExplainedNumber(explainedNumber.ResultNumber, (StringBuilder)null);
-                PerkHelper.AddPerkBonusForTown(DefaultPerks.Medicine.BushDoctor, village.Bound.Town, ref bonuses);
-                explainedNumber.Add(bonuses.ResultNumber - explainedNumber.ResultNumber, this._governor);
+                if (village.Bound.Town.CurrentBuilding != null && village.Bound.Town.CurrentBuilding.BuildingType == DefaultBuildingTypes.IrrigationDaily)
+                    AddDefaultDailyBonus(village.Bound.Town, ref explainedNumber);
+                PerkHelper.AddPerkBonusForTown(DefaultPerks.Medicine.BushDoctor, village.Bound.Town, ref explainedNumber);
             }
             return explainedNumber.ResultNumber;
         }
@@ -149,8 +155,8 @@ namespace LightProsperity
             
             foreach (Building building in fortification.Buildings)
             {
-                int buildingEffectAmount = building.GetBuildingEffectAmount(DefaultBuildingEffects.Prosperity);
-                if ((!building.BuildingType.IsDefaultProject || fortification.CurrentBuilding == building) && buildingEffectAmount > 0)
+                float buildingEffectAmount = building.GetBuildingEffectAmount(BuildingEffectEnum.Prosperity);
+                if (!building.BuildingType.IsDefaultProject && buildingEffectAmount > 0)
                 {
                     float bonus = (float)buildingEffectAmount * _vanillaToRatio * newBorn;
                     explainedNumber.Add(bonus * SubModule.Settings.prosperityGrowthMultiplier, building.Name);
