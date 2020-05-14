@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using TaleWorlds.CampaignSystem;
 using TaleWorlds.Core;
 using TaleWorlds.Localization;
@@ -72,12 +73,20 @@ namespace LightProsperity
             }
             else if (village.VillageState == Village.VillageStates.Looted)
                 explainedNumber.Add(-village.Hearth * 0.02f, this._raidedText);
+            // v1.4
             if (village.Bound != null)
             {
                 if (village.Bound.Town.CurrentBuilding != null && village.Bound.Town.CurrentBuilding.BuildingType == DefaultBuildingTypes.IrrigationDaily)
                     AddDefaultDailyBonus(village.Bound.Town, ref explainedNumber);
                 PerkHelper.AddPerkBonusForTown(DefaultPerks.Medicine.BushDoctor, village.Bound.Town, ref explainedNumber);
             }
+            // v1.3
+            //if (village.Bound != null && (double)explainedNumber.ResultNumber > 0.0)
+            //{
+            //    ExplainedNumber bonuses = new ExplainedNumber(explainedNumber.ResultNumber, (StringBuilder)null);
+            //    PerkHelper.AddPerkBonusForTown(DefaultPerks.Medicine.BushDoctor, village.Bound.Town, ref bonuses);
+            //    explainedNumber.Add(bonuses.ResultNumber - explainedNumber.ResultNumber, this._governor);
+            //}
             return explainedNumber.ResultNumber;
         }
 
@@ -154,6 +163,10 @@ namespace LightProsperity
 
             foreach (Building building in fortification.Buildings)
             {
+                // v1.3
+                //int buildingEffectAmount = building.GetBuildingEffectAmount(DefaultBuildingEffects.Prosperity);
+                //if ((!building.BuildingType.IsDefaultProject || fortification.CurrentBuilding == building) && buildingEffectAmount > 0)
+                // v1.4
                 float buildingEffectAmount = building.GetBuildingEffectAmount(BuildingEffectEnum.Prosperity);
                 if (!building.BuildingType.IsDefaultProject && buildingEffectAmount > 0)
                 {
