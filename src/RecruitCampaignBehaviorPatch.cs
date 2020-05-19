@@ -159,6 +159,11 @@ namespace LightProsperity
 
         private static void UpdateCastleNobleRecruit(Settlement settlement)
         {
+            if (settlement.IsUnderSiege)
+            {
+                return;
+            }
+
             int num = GetDailyCastleNobleRecruitCount(settlement);
             if (num > 0)
             {

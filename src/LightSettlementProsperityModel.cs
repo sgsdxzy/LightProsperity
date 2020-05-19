@@ -72,7 +72,7 @@ namespace LightProsperity
                 explainedNumber.Add(enemyAround * Settings.Instance.ProsperityGrowthMultiplier, _enemyText);
             }
             else if (village.VillageState == Village.VillageStates.Looted)
-                explainedNumber.Add(-village.Hearth * 0.02f, this._raidedText);
+                explainedNumber.Add(-village.Hearth * 0.01f, this._raidedText);
             // v1.4
             if (village.Bound != null)
             {
