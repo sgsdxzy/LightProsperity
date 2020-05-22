@@ -143,16 +143,9 @@ namespace LightProsperity
                 }
             }
 
-            float oldNumber = explainedNumber.ResultNumber;
             PerkHelper.AddPerkBonusForTown(DefaultPerks.Medicine.PristineStreets, fortification, ref explainedNumber);
-            float newNumber = explainedNumber.ResultNumber;
-            float diff = newNumber - oldNumber;
-            if (diff != 0 && explainedNumber.Explainer != null)
-            {
-                explainedNumber.Explainer.Lines.Last().Number *= _vanillaToRatio * newBorn;
-            }
-            float resultDiff = diff * _vanillaToRatio * newBorn + oldNumber - newNumber;
-
+            if (fortification.CurrentBuilding.BuildingType == DefaultBuildingTypes.BuildHouseDaily)
+               AddDefaultDailyBonus(fortification, ref explainedNumber);
             foreach (Building building in fortification.Buildings)
             {
                 float buildingEffectAmount = building.GetBuildingEffectAmount(BuildingEffectEnum.Prosperity);
@@ -164,15 +157,7 @@ namespace LightProsperity
 
                 if (building.BuildingType == DefaultBuildingTypes.SettlementAquaducts)
                 {
-                    oldNumber = explainedNumber.ResultNumber;
                     PerkHelper.AddPerkBonusForTown(DefaultPerks.Medicine.CleanInfrastructure, fortification, ref explainedNumber);
-                    newNumber = explainedNumber.ResultNumber;
-                    diff = newNumber - oldNumber;
-                    if (diff != 0 && explainedNumber.Explainer != null)
-                    {
-                        explainedNumber.Explainer.Lines.Last().Number *= _vanillaToRatio * newBorn;
-                    }
-                    resultDiff += diff * _vanillaToRatio * newBorn + oldNumber - newNumber;
                 }
 
             }
@@ -216,28 +201,20 @@ namespace LightProsperity
                     explainedNumber.Add(bonus * Settings.Instance.ProsperityGrowthMultiplier, DefaultPolicies.WarTax.Name);
                 }
             }
-
-            oldNumber = explainedNumber.ResultNumber;
-            this.GetSettlementProsperityChangeDueToIssues(fortification.Settlement, ref explainedNumber);
-            newNumber = explainedNumber.ResultNumber;
-            diff = newNumber - oldNumber;
-            if (diff != 0 && explainedNumber.Explainer != null)
-            {
-                explainedNumber.Explainer.Lines.Last().Number *= _vanillaToRatio * newBorn;
-            }
-            resultDiff += diff * _vanillaToRatio * newBorn + oldNumber - newNumber;
-
-            return explainedNumber.ResultNumber + resultDiff;
+            this.GetSettlementProsperityChangeDueToIssues(fortification.Settlement, ref explainedNumber, newBorn);
+            return explainedNumber.ResultNumber;
         }
 
         private void GetSettlementProsperityChangeDueToIssues(
           Settlement settlement,
-          ref ExplainedNumber result)
+          ref ExplainedNumber result,
+          float newBorn)
         {
             float totalChange;
             if (!IssueManager.DoesSettlementHasIssueEffect(DefaultIssueEffects.SettlementProsperity, settlement, out totalChange))
                 return;
-            result.Add(totalChange, this._issueText);
+            float bonus = totalChange * _vanillaToRatio * newBorn;
+            result.Add(bonus, this._issueText);
         }
     }
 }
