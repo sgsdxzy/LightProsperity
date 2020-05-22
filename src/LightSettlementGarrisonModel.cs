@@ -90,29 +90,6 @@ namespace LightProsperity
             return num7;
         }
 
-        /*
-        public override int FindNumberOfTroopsToTakeFromGarrison(
-            MobileParty mobileParty,
-            Settlement settlement)
-        {
-            MobileParty garrisonParty = settlement.Town.GarrisonParty;
-            if (garrisonParty == null)
-                return 0;
-            float totalStrength = garrisonParty.Party.TotalStrength;
-            float num1 = FactionHelper.FindIdealGarrisonStrengthPerWalledCenter(mobileParty.MapFaction as Kingdom, settlement.OwnerClan) * FactionHelper.OwnerClanEconomyEffectOnGarrisonSizeConstant(settlement.OwnerClan) * (settlement.IsTown ? 2f : 1f);
-            float num2 = (float)mobileParty.Party.PartySizeLimit * mobileParty.PaymentRatio / (float)mobileParty.Party.NumberOfAllMembers;
-            double num3 = Math.Min(11.0, (double)num2 * Math.Sqrt((double)num2)) - 1.0;
-            float num4 = (float)Math.Pow((double)totalStrength / (double)num1, 1.5);
-            float num5 = mobileParty.LeaderHero.Clan.Leader == mobileParty.LeaderHero ? 2f : 1f;
-            double num6 = (double)num4;
-            int num7 = MBRandom.RoundRandomized((float)(num3 * num6) * num5);
-            int num8 = 25 * (settlement.IsTown ? 2 : 1);
-            if (num7 > garrisonParty.Party.MemberRoster.TotalRegulars - num8)
-                num7 = garrisonParty.Party.MemberRoster.TotalRegulars - num8;
-            return num7;
-        }
-        */
-
         public override int FindNumberOfTroopsToLeaveToGarrison(
             MobileParty mobileParty,
             Settlement settlement)
