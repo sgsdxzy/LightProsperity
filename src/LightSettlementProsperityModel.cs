@@ -1,5 +1,4 @@
-﻿using Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using TaleWorlds.CampaignSystem;
@@ -24,6 +23,8 @@ namespace LightProsperity
         private readonly TextObject _enemyText = new TextObject("Enemy Around", (Dictionary<string, TextObject>)null);
         private readonly TextObject _foodWorriesText = new TextObject("Food Running Out", (Dictionary<string, TextObject>)null);
 
+        private static readonly TextObject _textGovernor = new TextObject("{=Fa2nKXxI}Governor", (Dictionary<string, TextObject>)null);
+
         private static readonly float _hearthMultiplier = 0.01f;
         private static readonly float _townProsperityMultiplier = 0.0075f;
         private static readonly float _castleProsperityMultiplier = 0.0075f;
@@ -36,7 +37,7 @@ namespace LightProsperity
         internal static void AddDefaultDailyBonus(Town fortification, ref ExplainedNumber result)
         {
             float num = (float)((double)fortification.Construction * (double)fortification.CurrentBuilding.BuildingType.Effects[0].Level1Effect * 0.00999999977648258);
-            result.Add(num, fortification.CurrentBuilding.BuildingType.Name);
+            result.Add(num * Settings.Instance.ProsperityGrowthMultiplier, fortification.CurrentBuilding.BuildingType.Name);
         }
 
         public override float CalculateProsperityChange(Town fortification, StatExplainer explanation = null)
@@ -69,16 +70,17 @@ namespace LightProsperity
                 float enemyRatio = Math.Min(0.8f * village.Settlement.NumberOfEnemiesSpottedAround, 1f);
                 float enemyAround = -enemyRatio * village.Hearth * _hearthMultiplier;
                 explainedNumber.Add(enemyAround * Settings.Instance.ProsperityGrowthMultiplier, _enemyText);
+
+                if (village.Bound != null)
+                {
+                    if (village.Bound.Town.CurrentBuilding != null && village.Bound.Town.CurrentBuilding.BuildingType == DefaultBuildingTypes.IrrigationDaily)
+                        AddDefaultDailyBonus(village.Bound.Town, ref explainedNumber);
+                    AddPerkBonusForTown(DefaultPerks.Medicine.BushDoctor, village.Bound.Town, ref explainedNumber, newBorn);
+                }
             }
             else if (village.VillageState == Village.VillageStates.Looted)
-                explainedNumber.Add(-village.Hearth * 0.01f, this._raidedText);
+                explainedNumber.Add(-village.Hearth * 0.01f * Settings.Instance.ProsperityGrowthMultiplier, this._raidedText);
 
-            if (village.Bound != null)
-            {
-                if (village.Bound.Town.CurrentBuilding != null && village.Bound.Town.CurrentBuilding.BuildingType == DefaultBuildingTypes.IrrigationDaily)
-                    AddDefaultDailyBonus(village.Bound.Town, ref explainedNumber);
-                PerkHelper.AddPerkBonusForTown(DefaultPerks.Medicine.BushDoctor, village.Bound.Town, ref explainedNumber);
-            }
             return explainedNumber.ResultNumber;
         }
 
@@ -143,9 +145,9 @@ namespace LightProsperity
                 }
             }
 
-            PerkHelper.AddPerkBonusForTown(DefaultPerks.Medicine.PristineStreets, fortification, ref explainedNumber);
+            AddPerkBonusForTown(DefaultPerks.Medicine.PristineStreets, fortification, ref explainedNumber, newBorn);
             if (fortification.CurrentBuilding.BuildingType == DefaultBuildingTypes.BuildHouseDaily)
-               AddDefaultDailyBonus(fortification, ref explainedNumber);
+                AddDefaultDailyBonus(fortification, ref explainedNumber);
             foreach (Building building in fortification.Buildings)
             {
                 float buildingEffectAmount = building.GetBuildingEffectAmount(BuildingEffectEnum.Prosperity);
@@ -157,7 +159,7 @@ namespace LightProsperity
 
                 if (building.BuildingType == DefaultBuildingTypes.SettlementAquaducts)
                 {
-                    PerkHelper.AddPerkBonusForTown(DefaultPerks.Medicine.CleanInfrastructure, fortification, ref explainedNumber);
+                    AddPerkBonusForTown(DefaultPerks.Medicine.CleanInfrastructure, fortification, ref explainedNumber, newBorn);
                 }
 
             }
@@ -214,7 +216,37 @@ namespace LightProsperity
             if (!IssueManager.DoesSettlementHasIssueEffect(DefaultIssueEffects.SettlementProsperity, settlement, out totalChange))
                 return;
             float bonus = totalChange * _vanillaToRatio * newBorn;
-            result.Add(bonus, this._issueText);
+            result.Add(bonus * Settings.Instance.ProsperityGrowthMultiplier, this._issueText);
+        }
+
+        private static void AddPerkBonusForTown(PerkObject perk, Town town, ref ExplainedNumber bonuses, float newBorn)
+        {
+            if (perk.PrimaryRole != SkillEffect.PerkRole.Governor && perk.SecondaryRole != SkillEffect.PerkRole.Governor)
+                return;
+            Hero governor = town.Governor;
+            if (governor == null || !governor.GetPerkValue(perk) || (governor.CurrentSettlement == null || governor.CurrentSettlement != town.Settlement))
+                return;
+            float number = perk.PrimaryRole == SkillEffect.PerkRole.Governor ? perk.PrimaryBonus : perk.SecondaryBonus;
+            AddToStat(ref bonuses, perk.IncrementType, number, _textGovernor, newBorn);
+        }
+
+        private static void AddToStat(
+            ref ExplainedNumber stat,
+            SkillEffect.EffectIncrementType effectIncrementType,
+            float number,
+            TextObject text,
+            float newBorn)
+        {
+            if (effectIncrementType == SkillEffect.EffectIncrementType.Add)
+            {
+                stat.Add(number * _vanillaToRatio * newBorn * Settings.Instance.ProsperityGrowthMultiplier, text);
+            }
+            else
+            {
+                if (effectIncrementType != SkillEffect.EffectIncrementType.AddFactor)
+                    return;
+                stat.AddFactor(number * 0.01f, text);
+            }
         }
     }
 }
