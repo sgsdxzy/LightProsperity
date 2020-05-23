@@ -16,10 +16,10 @@ namespace LightProsperity
         [SettingPropertyGroup(groupName: "{=nY8kyK}General Settings", order: 0)]
         public DefaultDropdown<string> BonusSlotsFor { get; set; } = new DefaultDropdown<string>(new string[]
         {
-            "{=cPHZ4q}Everyone",
-            "{=OBHy52}Not at war",
-            "{=8N0ico}Same faction",
-            "{=bNeWsj}Same clan"
+            "Everyone",
+            "Not at war",
+            "Same faction",
+            "Same clan"
         }, 2);
 
         [SettingPropertyFloatingInteger(displayName: "{=Dt7T5Q}Prisoner Prosperity Value", minValue: 0f, maxValue: 10f, Order = 1, RequireRestart = false, HintText = "{=FZTOih}Prosperity increase for selling one prisoner.")]
