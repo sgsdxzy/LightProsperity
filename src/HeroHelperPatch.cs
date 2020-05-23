@@ -41,7 +41,7 @@ namespace LightProsperity
                 }
             }
 
-            int num8 = 0;
+            int num8;
             if (num8_0 > 0)
             {
                 switch (Settings.Instance.BonusSlotsFor.SelectedIndex)
@@ -53,10 +53,10 @@ namespace LightProsperity
                         num8 = !buyerHero.MapFaction.IsAtWarWith(sellerHero.CurrentSettlement.MapFaction) ? num8_0 : 0;
                         break;
                     case 2:
-                        num8 = buyerHero.MapFaction == sellerHero.CurrentSettlement.MapFaction ? num8 : 0;
+                        num8 = buyerHero.MapFaction == sellerHero.CurrentSettlement.MapFaction ? num8_0 : 0;
                         break;
                     default:
-                        num8 = buyerHero.Clan == sellerHero.CurrentSettlement.OwnerClan ? num8 : 0;
+                        num8 = buyerHero.Clan == sellerHero.CurrentSettlement.OwnerClan ? num8_0 : 0;
                         break;
                 }
             }
