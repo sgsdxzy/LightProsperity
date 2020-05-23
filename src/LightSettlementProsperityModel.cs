@@ -19,9 +19,9 @@ namespace LightProsperity
         private readonly TextObject _issues = new TextObject("{=D7KllIPI}Issues", (Dictionary<string, TextObject>)null);
         private readonly TextObject _newBornText = new TextObject("{=RVas571P}New Born", (Dictionary<string, TextObject>)null);
         private readonly TextObject _raidedText = new TextObject("{=RVas572P}Raided", (Dictionary<string, TextObject>)null);
-        private readonly TextObject _populationLossText = new TextObject("Population Loss", (Dictionary<string, TextObject>)null);
-        private readonly TextObject _enemyText = new TextObject("Enemy Around", (Dictionary<string, TextObject>)null);
-        private readonly TextObject _foodWorriesText = new TextObject("Food Running Out", (Dictionary<string, TextObject>)null);
+        private readonly TextObject _populationLossText = new TextObject("{=iz6aMY}Population Loss", (Dictionary<string, TextObject>)null);
+        private readonly TextObject _enemyText = new TextObject("{=YpDrMf}Enemy Around", (Dictionary<string, TextObject>)null);
+        private readonly TextObject _foodWorriesText = new TextObject("{=PBMzr8}Food Running Out", (Dictionary<string, TextObject>)null);
 
         private static readonly TextObject _textGovernor = new TextObject("{=Fa2nKXxI}Governor", (Dictionary<string, TextObject>)null);
 
