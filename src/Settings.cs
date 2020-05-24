@@ -1,19 +1,19 @@
-﻿using MBOptionScreen.Attributes;
-using MBOptionScreen.Attributes.v2;
-using MBOptionScreen.Data;
-using MBOptionScreen.Settings;
+﻿using MCM.Abstractions.Attributes;
+using MCM.Abstractions.Attributes.v2;
+using MCM.Abstractions.Data;
+using MCM.Abstractions.Settings.Base.Global;
 
 namespace LightProsperity
 {
-    public class Settings : AttributeSettings<Settings>
+    public class Settings : AttributeGlobalSettings<Settings>
     {
-        public override string Id { get; set; } = "Light.Prosperity_v1";
-        public override string ModName => "Light Prosperity";
-        public override string ModuleFolderName => "LightProsperity";
+        public override string Id => "Light.Prosperity_v1";
+        public override string DisplayName => "Light Prosperity";
+        public override string FolderName => "LightProsperity";
 
 
         [SettingPropertyDropdown(displayName: "{=st3hNa}Bonus Slots For", Order = 0, RequireRestart = false, HintText = "{=FsrLvU}Who can receive extra recruitment slots from notables.")]
-        [SettingPropertyGroup(groupName: "{=nY8kyK}General Settings", order: 0)]
+        [SettingPropertyGroup(groupName: "{=nY8kyK}General Settings", GroupOrder = 0)]
         public DefaultDropdown<string> BonusSlotsFor { get; set; } = new DefaultDropdown<string>(new string[]
         {
             "Everyone",
@@ -36,7 +36,7 @@ namespace LightProsperity
 
 
         [SettingPropertyBool(displayName: "{=2w9Irb}Garrison Settings", Order = 0, RequireRestart = true, HintText = "{=iYJ2Aw}Modify food consumption and wages of garrison.")]
-        [SettingPropertyGroup(groupName: "{=2w9Irb}Garrison Settings", order: 1, IsMainToggle = true)]
+        [SettingPropertyGroup(groupName: "{=2w9Irb}Garrison Settings", GroupOrder = 1, IsMainToggle = true)]
         public bool ModifyGarrisonConsumption { get; set; } = true;
 
         [SettingPropertyFloatingInteger(displayName: "{=bYdOtk}Garrison Wages Multiplier", minValue: 0f, maxValue: 1f, Order = 1, RequireRestart = false, HintText = "{=zAi4b4}Multiplier for garrison wages.")]
@@ -49,7 +49,7 @@ namespace LightProsperity
 
 
         [SettingPropertyBool(displayName: "{=NDmBnT}New Prosperity Model", Order = 0, RequireRestart = true, HintText = "{=cboszz}Enable the new prosperity model. The new model gives settlements a natural new born growth rate and is affected by settlement capacity, trade, food storage and enemies around.")]
-        [SettingPropertyGroup(groupName: "{=NDmBnT}New Prosperity Model", order: 2, IsMainToggle = true)]
+        [SettingPropertyGroup(groupName: "{=NDmBnT}New Prosperity Model", GroupOrder = 2, IsMainToggle = true)]
         public bool NewProsperityModel { get; set; } = false;
 
         [SettingPropertyInteger(displayName: "{=1DP3ee}Village Natural Growth Capacity", minValue: 0, maxValue: 3000, Order = 1, RequireRestart = false, HintText = "{=udES1n}Natural growth capacity for village. 0 for unlimited.")]
@@ -66,7 +66,7 @@ namespace LightProsperity
 
 
         [SettingPropertyInteger(displayName: "{=vmWeg5}Town Minimum Prosperity for Recruit", minValue: 0, maxValue: 5000, Order = 0, RequireRestart = false, HintText = "{=5lAFED}If prosperity is below this value, a town will stop generating new recruits.")]
-        [SettingPropertyGroup(groupName: "{=rRxcGb}Town Settings", order: 3)]
+        [SettingPropertyGroup(groupName: "{=rRxcGb}Town Settings", GroupOrder = 3)]
         public int TownMinProsperityForRecruit { get; set; } = 1000;
 
         [SettingPropertyInteger(displayName: "{=zfnNmH}Town Prosperity Threshold", minValue: 0, maxValue: 10000, Order = 1, RequireRestart = false, HintText = "{=DCIx2W}The required prosperity for a town to generate more recruits.")]
@@ -83,7 +83,7 @@ namespace LightProsperity
 
 
         [SettingPropertyInteger(displayName: "{=f0PBIT}Village Minimum Hearth for Recruit", minValue: 0, maxValue: 500, Order = 0, RequireRestart = false, HintText = "{=6J40z3}If hearth is below this value, a village will stop generating new recruits.")]
-        [SettingPropertyGroup(groupName: "{=Sbl08S}Village Settings", order: 4)]
+        [SettingPropertyGroup(groupName: "{=Sbl08S}Village Settings", GroupOrder = 4)]
         public int VillageMinProsperityForRecruit { get; set; } = 100;
 
         [SettingPropertyInteger(displayName: "{=5gY7RW}Village Hearth Threshold", minValue: 0, maxValue: 1000, Order = 1, RequireRestart = false, HintText = "{=XRf31f}The required hearth for a village to generate more recruits.")]
@@ -100,7 +100,7 @@ namespace LightProsperity
 
 
         [SettingPropertyInteger(displayName: "{=0A9Xwm}Castle Minimum Prosperity for Recruit", minValue: 0, maxValue: 2000, Order = 0, RequireRestart = false, HintText = "{=QH4Z4u}If prosperity is below this value, a castle will stop generating new noble recruits.")]
-        [SettingPropertyGroup(groupName: "{=DACgrG}Castle Settings", order: 5)]
+        [SettingPropertyGroup(groupName: "{=DACgrG}Castle Settings", GroupOrder = 5)]
         public int CastleMinProsperityForRecruit { get; set; } = 500;
 
         [SettingPropertyInteger(displayName: "{=2Qgisr}Castle Prosperity Threshold", minValue: 0, maxValue: 20000, Order = 1, RequireRestart = false, HintText = "{=5mN2sb}Controls the chance of castles getting noble recruits. If prosperity reaches the threshold, the castle is guaranteed to get one noble recruit every day.")]
@@ -113,7 +113,7 @@ namespace LightProsperity
 
 
         [SettingPropertyInteger(displayName: "{=izsqza}Notable Power Threshold For Noble Recruit", minValue: 0, maxValue: 1000, Order = 0, RequireRestart = false, HintText = "{=bh2GwT}Controls the chance of rural notables getting noble recruits. If power reaches the threshold, the notable is guaranteed to get notable recruits at every chance.")]
-        [SettingPropertyGroup(groupName: "{=JZ32iR}Notable Settings", order: 6)]
+        [SettingPropertyGroup(groupName: "{=JZ32iR}Notable Settings", GroupOrder = 6)]
         public int NotablePowerThresholdForNobleRecruit { get; set; } = 600;
 
         [SettingPropertyFloatingInteger(displayName: "{=CpOhvD}Notable Noble Recruit Power Cost", minValue: 0f, maxValue: 10f, Order = 1, RequireRestart = false, HintText = "{=45urKB}The power cost for one noble recuit.")]
