@@ -32,19 +32,19 @@ namespace LightProsperity
                 if (settlement.IsTown)
                 {
                     float prosperity = settlement.Prosperity;
-                    num8_0 = (int)Math.Floor((prosperity - Settings.Instance.TownProsperityThreshold) / Settings.Instance.TownProsperityPerBonusSlot);
+                    num8_0 = (int)Math.Floor((prosperity - SubModule.Settings.TownProsperityThreshold) / SubModule.Settings.TownProsperityPerBonusSlot);
                 }
                 if (settlement.IsVillage)
                 {
                     float prosperity = settlement.Village.Hearth;
-                    num8_0 = (int)Math.Floor((prosperity - Settings.Instance.VillageProsperityThreshold) / Settings.Instance.VillageProsperityPerBonusSlot);
+                    num8_0 = (int)Math.Floor((prosperity - SubModule.Settings.VillageProsperityThreshold) / SubModule.Settings.VillageProsperityPerBonusSlot);
                 }
             }
 
             int num8;
             if (num8_0 > 0)
             {
-                switch (Settings.Instance.BonusSlotsFor.SelectedIndex)
+                switch (SubModule.Settings.BonusSlotsFor.SelectedIndex)
                 {
                     case 0:
                         num8 = num8_0;

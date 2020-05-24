@@ -36,7 +36,7 @@ namespace LightProsperity
 
 
         [SettingPropertyBool(displayName: "{=2w9Irb}Garrison Settings", Order = 0, RequireRestart = true, HintText = "{=iYJ2Aw}Modify food consumption and wages of garrison.")]
-        [SettingPropertyGroup(groupName: "{=2w9Irb}Garrison Settings", order: 1, isMainToggle: true)]
+        [SettingPropertyGroup(groupName: "{=2w9Irb}Garrison Settings", order: 1, IsMainToggle = true)]
         public bool ModifyGarrisonConsumption { get; set; } = true;
 
         [SettingPropertyFloatingInteger(displayName: "{=bYdOtk}Garrison Wages Multiplier", minValue: 0f, maxValue: 1f, Order = 1, RequireRestart = false, HintText = "{=zAi4b4}Multiplier for garrison wages.")]
@@ -49,7 +49,7 @@ namespace LightProsperity
 
 
         [SettingPropertyBool(displayName: "{=NDmBnT}New Prosperity Model", Order = 0, RequireRestart = true, HintText = "{=cboszz}Enable the new prosperity model. The new model gives settlements a natural new born growth rate and is affected by settlement capacity, trade, food storage and enemies around.")]
-        [SettingPropertyGroup(groupName: "{=NDmBnT}New Prosperity Model", order: 2, isMainToggle: true)]
+        [SettingPropertyGroup(groupName: "{=NDmBnT}New Prosperity Model", order: 2, IsMainToggle = true)]
         public bool NewProsperityModel { get; set; } = false;
 
         [SettingPropertyInteger(displayName: "{=1DP3ee}Village Natural Growth Capacity", minValue: 0, maxValue: 3000, Order = 1, RequireRestart = false, HintText = "{=udES1n}Natural growth capacity for village. 0 for unlimited.")]

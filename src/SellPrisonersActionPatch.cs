@@ -15,7 +15,7 @@ namespace LightProsperity
         {
             if (currentSettlement != null)
             {
-                currentSettlement.Prosperity += prisoners.TotalRegulars * Settings.Instance.PrisonerProsperityValue;
+                currentSettlement.Prosperity += prisoners.TotalRegulars * SubModule.Settings.PrisonerProsperityValue;
             }
         }
     }

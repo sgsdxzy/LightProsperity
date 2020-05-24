@@ -15,16 +15,16 @@ namespace LightProsperity
             {
                 foreach (StatExplainer.ExplanationLine line in explanation.Lines)
                 {
-                    line.Number *= Settings.Instance.ProsperityGrowthMultiplier;
+                    line.Number *= SubModule.Settings.ProsperityGrowthMultiplier;
                 }
             }
 
-            __result *= Settings.Instance.ProsperityGrowthMultiplier;
+            __result *= SubModule.Settings.ProsperityGrowthMultiplier;
         }
 
         public static bool Prepare()
         {
-            return !Settings.Instance.NewProsperityModel && Settings.Instance.ProsperityGrowthMultiplier != 1;
+            return !SubModule.Settings.NewProsperityModel && SubModule.Settings.ProsperityGrowthMultiplier != 1;
         }
     }
 
@@ -39,16 +39,16 @@ namespace LightProsperity
             {
                 foreach (StatExplainer.ExplanationLine line in explanation.Lines)
                 {
-                    line.Number *= Settings.Instance.ProsperityGrowthMultiplier;
+                    line.Number *= SubModule.Settings.ProsperityGrowthMultiplier;
                 }
             }
 
-            __result *= Settings.Instance.ProsperityGrowthMultiplier;
+            __result *= SubModule.Settings.ProsperityGrowthMultiplier;
         }
 
         public static bool Prepare()
         {
-            return !Settings.Instance.NewProsperityModel && Settings.Instance.ProsperityGrowthMultiplier != 1;
+            return !SubModule.Settings.NewProsperityModel && SubModule.Settings.ProsperityGrowthMultiplier != 1;
         }
     }
 }
