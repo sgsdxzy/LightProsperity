@@ -8,12 +8,13 @@ namespace LightProsperity
     public class SubModule : MBSubModuleBase
     {
         private bool Patched = false;
-        public static Settings Settings = Settings.Instance;
+        public static Settings Settings;
 
         protected override void OnBeforeInitialModuleScreenSetAsRoot()
         {
             if (!Patched)
             {
+                Settings = Settings.Instance;
                 var harmony = new Harmony("mod.bannerlord.lightprosperity");
                 harmony.PatchAll();
                 Patched = true;
