@@ -55,7 +55,7 @@ namespace LightProsperity
             ExplainedNumber explainedNumber = new ExplainedNumber(0.0f, explanation, (TextObject)null);
             if (village.VillageState == Village.VillageStates.Normal)
             {
-                float newBorn = Math.Max(village.Hearth * _hearthMultiplier, 1);
+                float newBorn = Math.Max(village.Hearth * _hearthMultiplier, 0.5f);
                 float loss = _hearthCoeff * village.Hearth * village.Hearth * _hearthMultiplier;
                 float population = newBorn - loss;
                 if (population > 0)

@@ -82,8 +82,7 @@ namespace LightProsperity
             // chance = Math.Sqrt(chance);
             if (HeroHelper.HeroShouldGiveEliteTroop(notable))
             {
-                double notableMinPowerForNobleRecruit = 200;
-                double chance = ((double)notable.Power - notableMinPowerForNobleRecruit) / (SubModule.Settings.NotablePowerThresholdForNobleRecruit - notableMinPowerForNobleRecruit);
+                double chance = Math.Pow((double)notable.Power / SubModule.Settings.NotablePowerThresholdForNobleRecruit, 1.5);
                 if ((double)MBRandom.RandomFloat < chance)
                 {
                     notable.VolunteerTypes[index] = cultureObject.EliteBasicTroop;
